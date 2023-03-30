@@ -12,5 +12,5 @@ generator client {
 }
 
 model Player {
-  discordId String @id
+  discordId String @id @db.Char(18)
 }

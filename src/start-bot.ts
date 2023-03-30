@@ -3,7 +3,15 @@ import { Options, Partials } from 'discord.js';
 import { createRequire } from 'node:module';
 
 import { Button } from './buttons/index.js';
-import { HelpCommand, InfoCommand, TestCommand } from './commands/chat/index.js';
+import {
+    Guess,
+    HelpCommand,
+    InfoCommand,
+    JoinRoom,
+    NewRoom,
+    Start,
+    TestCommand,
+} from './commands/chat/index.js';
 import {
     ChatCommandMetadata,
     Command,
@@ -60,13 +68,17 @@ async function start(): Promise<void> {
         new InfoCommand(),
         new TestCommand(),
 
+        // game commands
+        new NewRoom(),
+        new JoinRoom(),
+        new Start(),
+        new Guess(),
+
         // Message Context Commands
         new ViewDateSent(),
 
         // User Context Commands
         new ViewDateJoined(),
-
-        // TODO: Add new commands here
     ];
 
     // Buttons

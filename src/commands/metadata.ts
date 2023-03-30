@@ -50,6 +50,42 @@ export const ChatCommandMetadata: {
         dm_permission: true,
         default_member_permissions: undefined,
     },
+    NEW_ROOM: {
+        type: ApplicationCommandType.ChatInput,
+        name: Lang.getRef('chatCommands.newRoom', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('chatCommands.newRoom'),
+        description: Lang.getRef('commandDescs.newRoom', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('commandDescs.newRoom'),
+        dm_permission: false,
+        default_member_permissions: undefined,
+    },
+    JOIN_ROOM: {
+        type: ApplicationCommandType.ChatInput,
+        name: Lang.getRef('chatCommands.joinRoom', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('chatCommands.joinRoom'),
+        description: Lang.getRef('commandDescs.joinRoom', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('commandDescs.joinRoom'),
+        dm_permission: false,
+        default_member_permissions: undefined,
+    },
+    START: {
+        type: ApplicationCommandType.ChatInput,
+        name: Lang.getRef('chatCommands.start', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('chatCommands.start'),
+        description: Lang.getRef('commandDescs.start', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('commandDescs.start'),
+        dm_permission: false,
+        default_member_permissions: undefined,
+    },
+    GUESS: {
+        type: ApplicationCommandType.ChatInput,
+        name: Lang.getRef('chatCommands.guess', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('chatCommands.guess'),
+        description: Lang.getRef('commandDescs.guess', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('commandDescs.guess'),
+        dm_permission: false,
+        default_member_permissions: undefined,
+    },
 };
 
 export const MessageCommandMetadata: {

@@ -214,7 +214,7 @@
             "joinRoom": "Join a created room.",
             "start": "Start the game room.",
             "guess": "Make a guess.",
-            "forceSendDaily": "Force send the image of the day without having to wait for the scheduled time."
+            "forceSendDaily": "Force execute the Daily job."
         },
         "argDescs": {
             "helpOption": "Option.",

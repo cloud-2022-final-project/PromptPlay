@@ -5,8 +5,11 @@ import { EventData } from '../../models/internal-models.js';
 import { InteractionUtils } from '../../utils/index.js';
 import { Language } from '../../models/enum-helpers/index.js';
 
+/**
+ * This command handles when a player joins a room.
+ */
 export class JoinRoom implements Command {
-    public names = ['join-room'];
+    public names = [Lang.getRef('chatCommands.joinRoom', Language.Default)];
     public deferType = CommandDeferType.PUBLIC;
     public requireClientPerms: PermissionsString[] = [];
 

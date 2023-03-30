@@ -25,7 +25,8 @@ import {
     ReactionHandler,
 } from '../events/index.js';
 import { JobService, Logger } from '../services/index.js';
-import { PartialUtils } from '../utils/index.js';
+import { PartialUtils, prepareChannels } from '../utils/index.js';
+import { targetChannel as daily } from '../jobs/daily.js';
 
 const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
@@ -81,6 +82,13 @@ export class Bot {
     }
 
     private async onReady(): Promise<void> {
+        // prepare channels
+        const createChannelTasks = [];
+        for (const guild of this.client.guilds.cache.values()) {
+            createChannelTasks.push(prepareChannels(guild));
+        }
+        await Promise.all(createChannelTasks);
+
         let userTag = this.client.user?.tag;
         Logger.info(Logs.info.clientLogin.replaceAll('{USER_TAG}', userTag));
 
@@ -100,6 +108,9 @@ export class Bot {
         if (!this.ready || Debug.dummyMode.enabled) {
             return;
         }
+
+        // prepare channels
+        await prepareChannels(guild);
 
         try {
             await this.guildJoinHandler.process(guild);

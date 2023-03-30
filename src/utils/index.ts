@@ -1,3 +1,7 @@
+import { targetChannel as daily } from './../jobs/daily.js';
+import { Guild } from 'discord.js';
+import { Logger } from '../services/logger.js';
+
 export { ClientUtils } from './client-utils.js';
 export { CommandUtils } from './command-utils.js';
 export { FormatUtils } from './format-utils.js';
@@ -11,3 +15,28 @@ export { RegexUtils } from './regex-utils.js';
 export { ShardUtils } from './shard-utils.js';
 export { StringUtils } from './string-utils.js';
 export { ThreadUtils } from './thread-utils.js';
+
+const requiredChannels = [daily, '1', '2', '3'];
+
+/**
+ * Creates the required channels if they don't exist.
+ * @param client A custom discord.js client
+ * @param channels A list of channel names
+ */
+export const prepareChannels = async (guild: Guild): Promise<void> => {
+    for (const channelName of requiredChannels) {
+        const existingChannel = guild.channels.cache.find(channel => channel.name === channelName);
+
+        if (existingChannel) {
+            continue;
+        }
+
+        try {
+            await guild.channels.create({
+                name: channelName,
+            });
+        } catch (error) {
+            Logger.error(`Error creating channel ${channelName} in guild ${guild.name}`);
+        }
+    }
+};

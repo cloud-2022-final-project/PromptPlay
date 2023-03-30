@@ -86,6 +86,15 @@ export const ChatCommandMetadata: {
         dm_permission: false,
         default_member_permissions: undefined,
     },
+    DAILY: {
+        type: ApplicationCommandType.ChatInput,
+        name: Lang.getRef('chatCommands.forceSendDaily', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('chatCommands.forceSendDaily'),
+        description: Lang.getRef('commandDescs.forceSendDaily', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('commandDescs.forceSendDaily'),
+        dm_permission: false,
+        default_member_permissions: undefined,
+    },
 };
 
 export const MessageCommandMetadata: {

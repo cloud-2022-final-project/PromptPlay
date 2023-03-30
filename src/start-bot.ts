@@ -4,6 +4,7 @@ import { createRequire } from 'node:module';
 
 import { Button } from './buttons/index.js';
 import {
+    ForceSendDaily,
     Guess,
     HelpCommand,
     InfoCommand,
@@ -73,6 +74,9 @@ async function start(): Promise<void> {
         new JoinRoom(),
         new Start(),
         new Guess(),
+
+        // dev commands for us to use
+        new ForceSendDaily(client),
 
         // Message Context Commands
         new ViewDateSent(),

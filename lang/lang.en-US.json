@@ -190,7 +190,11 @@
         "chatCommands": {
             "help": "help",
             "info": "info",
-            "test": "test"
+            "test": "test",
+            "newRoom": "new-room",
+            "joinRoom": "join-room",
+            "start": "start",
+            "guess": "guess"
         },
         "userCommands": {
             "viewDateJoined": "View Date Joined"
@@ -204,7 +208,11 @@
         "commandDescs": {
             "help": "Find help or contact support.",
             "info": "View bot info.",
-            "test": "Run the test command."
+            "test": "Run the test command.",
+            "newRoom": "Create a new game room.",
+            "joinRoom": "Join a created room.",
+            "start": "Start the game room.",
+            "guess": "Make a guess."
         },
         "argDescs": {
             "helpOption": "Option.",

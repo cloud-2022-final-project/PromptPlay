@@ -74,6 +74,7 @@ async function start(): Promise<void> {
         new JoinRoom(),
         new Start(),
         new Guess(),
+        // TODO: add a prompt command for the prompt of the image
 
         // dev commands for us to use
         new ForceSendDaily(client),

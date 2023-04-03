@@ -195,7 +195,8 @@
             "joinRoom": "join-room",
             "start": "start",
             "guess": "guess",
-            "forceSendDaily": "daily"
+            "forceSendDaily": "daily",
+            "submitImage": "submit-image"
         },
         "userCommands": {
             "viewDateJoined": "View Date Joined"
@@ -204,7 +205,8 @@
             "viewDateSent": "View Date Sent"
         },
         "arguments": {
-            "option": "option"
+            "option": "option",
+            "submitImage": "prompt"
         },
         "commandDescs": {
             "help": "Find help or contact support.",
@@ -214,11 +216,13 @@
             "joinRoom": "Join a created room.",
             "start": "Start the game room.",
             "guess": "Make a guess.",
-            "forceSendDaily": "Force execute the Daily job."
+            "forceSendDaily": "Force execute the Daily job.",
+            "submitImage": "Create an image from a prompt."
         },
         "argDescs": {
             "helpOption": "Option.",
-            "infoOption": "Option."
+            "infoOption": "Option.",
+            "submitImage": "Prompt for the image."
         },
         "fields": {
             "commands": "Commands",

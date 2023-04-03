@@ -95,6 +95,21 @@ export const ChatCommandMetadata: {
         dm_permission: false,
         default_member_permissions: undefined,
     },
+    SUBMIT_IMAGE: {
+        type: ApplicationCommandType.ChatInput,
+        name: Lang.getRef('chatCommands.submitImage', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('chatCommands.submitImage'),
+        description: Lang.getRef('commandDescs.submitImage', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('commandDescs.submitImage'),
+        dm_permission: false,
+        default_member_permissions: undefined,
+        options: [
+            {
+                ...Args.SUBMIT_IMAGE_OPTION,
+                required: true,
+            },
+        ],
+    },
 };
 
 export const MessageCommandMetadata: {

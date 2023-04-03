@@ -10,6 +10,7 @@ import {
     InfoCommand,
     JoinRoom,
     NewRoom,
+    SubmitImage,
     Start,
     TestCommand,
 } from './commands/chat/index.js';
@@ -74,7 +75,7 @@ async function start(): Promise<void> {
         new JoinRoom(),
         new Start(),
         new Guess(),
-        // TODO: add a prompt command for the prompt of the image
+        new SubmitImage(),
 
         // dev commands for us to use
         new ForceSendDaily(client),

@@ -48,4 +48,11 @@ export class Args {
             },
         ],
     };
+    public static readonly SUBMIT_IMAGE_OPTION: APIApplicationCommandBasicOption = {
+        name: Lang.getRef('arguments.submitImage', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('arguments.submitImage'),
+        description: Lang.getRef('argDescs.submitImage', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('argDescs.submitImage'),
+        type: ApplicationCommandOptionType.String,
+    };
 }

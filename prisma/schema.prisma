@@ -11,6 +11,31 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model User {
+  id          String   @id @default(uuid())
+  discordId   String
+  totalScore  Int
+  updateTime DateTime @db.Timestamp(3)
+  createdAt DateTime @default(now())
+}
+
+model Room {
+  id          String   @id @default(uuid())
+  channel_id      String   @unique
+  owner_discord_id String
+  createdAt DateTime @default(now())
+  players      Player[]
+}
+
 model Player {
-  discordId String @id @db.Char(18)
+  id          String   @id @default(uuid())
+  channel_id  String
+  room        Room     @relation(fields: [channel_id], references: [channel_id])
+  discordId   String
+  sequence    Int
+  prompt      String
+  totalScore  Int
+  createdAt DateTime @default(now())
+
+  @@index([channel_id])
 }

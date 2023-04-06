@@ -1,4 +1,6 @@
+import { manualDailyImageCommandName } from './chat/manual-daily-image.js';
 import {
+    ApplicationCommandOptionType,
     ApplicationCommandType,
     RESTPostAPIChatInputApplicationCommandsJSONBody,
     RESTPostAPIContextMenuApplicationCommandsJSONBody,
@@ -106,6 +108,27 @@ export const ChatCommandMetadata: {
         options: [
             {
                 ...Args.SUBMIT_IMAGE_OPTION,
+                required: true,
+            },
+        ],
+    },
+    DEV_SUBMIT_DAILY_IMAGE: {
+        type: ApplicationCommandType.ChatInput,
+        name: manualDailyImageCommandName,
+        description: 'Manually submit a daily image',
+        dm_permission: false,
+        default_member_permissions: undefined,
+        options: [
+            {
+                name: 'prompt',
+                description: 'Prompt for the image',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+            },
+            {
+                name: 'image',
+                description: 'The image to submit',
+                type: ApplicationCommandOptionType.Attachment,
                 required: true,
             },
         ],

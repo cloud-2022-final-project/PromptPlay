@@ -1,4 +1,5 @@
 export { SubmitImage } from './prompt.create.js';
+export { ManualAddDailyImage  } from './manual-daily-image.js';
 export { HelpCommand } from './help-command.js';
 export { InfoCommand } from './info-command.js';
 export { TestCommand } from './test-command.js';

@@ -13,6 +13,7 @@ import {
     SubmitImage,
     Start,
     TestCommand,
+    ManualAddDailyImage,
 } from './commands/chat/index.js';
 import {
     ChatCommandMetadata,
@@ -79,6 +80,7 @@ async function start(): Promise<void> {
 
         // dev commands for us to use
         new ForceSendDaily(client),
+        new ManualAddDailyImage(),
 
         // Message Context Commands
         new ViewDateSent(),

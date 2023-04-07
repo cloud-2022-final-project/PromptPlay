@@ -47,11 +47,9 @@ import { Trigger } from './triggers/index.js';
 const require = createRequire(import.meta.url);
 let Config = require('../config/config.json');
 let Logs = require('../lang/logs.json');
-
 async function start(): Promise<void> {
     // Services
     let eventDataService = new EventDataService();
-
     // Client
     let client = new CustomClient({
         intents: Config.client.intents,

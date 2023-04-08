@@ -9,12 +9,20 @@ import { DailyImage } from '@prisma/client';
 
 export const targetChannel = 'daily';
 
+export let processingDaily = false;
+
 /**
  * Forcefully does the `Daily` job.
  * @param client The client to send the image with.
  * @param targetChannel The name of the channel to send the image to.
  */
 export const processDaily = async (client: CustomClient, targetChannel: string) => {
+    processingDaily = true;
+    await _process(client, targetChannel);
+    processingDaily = false;
+};
+
+const _process = async (client: CustomClient, targetChannel: string) => {
     // Find the channel by name
     const channel = client.channels.cache.find(
         c => c.type === ChannelType.GuildText && c.name === targetChannel

@@ -51,24 +51,40 @@ const _process = async (client: CustomClient, targetChannel: string) => {
         },
     });
 
+    // get a new image and prompt for the next round
+    const newImage = await getNewImage();
+
     // if there is no current image, create a new one and send it
     if (!dailyImage) {
-        const newImage = await getNewImage();
+        if (!newImage) {
+            // we have literally no images, so we can't do anything
+            return;
+        }
+
+        // create a fresh daily image
         const dailyImage = await prisma.dailyImage.create({
             data: {
                 prompt: newImage.prompt,
                 url: newImage.url,
             },
         });
+
+        // send the new image to the channel
         await sendNewDailyImage(channel, dailyImage);
+
+        return;
+    }
+
+    // report the results of the current round's voting
+    await reportDailyResults(dailyImage, dailyImage.players, client, channel);
+
+    // if there is no new image, end the job
+    if (!newImage) {
         return;
     }
 
     // Set the new image and prompt for the next day
-    const updatedDailyImage = await updateDailyImage(dailyImage.url);
-
-    // report the results of the previous round's voting
-    await reportDailyResults(dailyImage, dailyImage.players, client, channel);
+    const updatedDailyImage = await updateDailyImage(dailyImage.url, newImage);
 
     // send the new image
     await sendNewDailyImage(channel, updatedDailyImage);
@@ -93,11 +109,12 @@ export class Daily implements Job {
 
 /**
  * This function finds a new image and prompt to use for the next day from wherever the image is stored.
+ * @returns The new image and prompt or null if there is no new image
  */
 const getNewImage = async (): Promise<{
     url: string;
     prompt: string;
-}> => {
+} | null> => {
     // TODO: get a new image and its prompt
     return {
         prompt: 'This is a prompt.',
@@ -110,12 +127,15 @@ const getNewImage = async (): Promise<{
  * @param url The url of the daily image to update
  * @returns The updated daily image
  */
-const updateDailyImage = async (url: string) => {
+const updateDailyImage = async (
+    url: string,
+    newImage: {
+        url: string;
+        prompt: string;
+    }
+) => {
     // remove all players for the next round
     await prisma.dailyPlayer.deleteMany();
-
-    // get a new image and prompt
-    const newImage = await getNewImage();
 
     // set a new image and prompt
     return await prisma.dailyImage.update({

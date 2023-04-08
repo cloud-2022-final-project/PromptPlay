@@ -9,6 +9,9 @@ import { DailyImage } from '@prisma/client';
 
 export const targetChannel = 'daily';
 
+/**
+ * This tells if the `Daily` job is currently running.
+ */
 export let processingDaily = false;
 
 /**

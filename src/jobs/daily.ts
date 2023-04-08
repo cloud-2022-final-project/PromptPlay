@@ -56,7 +56,7 @@ export const processDaily = async (client: CustomClient, targetChannel: string) 
     // Set the new image and prompt for the next day
     const updatedDailyImage = await updateDailyImage(dailyImage.id);
 
-    // get all discord users
+    // report the results of the previous round's voting
     await reportDailyResults(dailyImage, dailyImage.users, client, channel);
 
     // send the new image
@@ -144,6 +144,7 @@ async function reportDailyResults(
     client: CustomClient,
     channel: TextChannel
 ) {
+    // get all discord users for their usernames
     const discordUsers = await Promise.all(
         dailyPlayers.map(async p => await ClientUtils.getUser(client, p.discordId))
     );

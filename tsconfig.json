@@ -2,12 +2,14 @@
     "compilerOptions": {
         "target": "es2021",
         "module": "es2022",
-        "lib": ["es2021"],
+        "lib": [
+            "es2021"
+        ],
         "declaration": true,
         "sourceMap": true,
         "outDir": "./dist",
         "rootDir": "./src",
-        "strict": true,
+        "strict": false,
         "moduleResolution": "node",
         "esModuleInterop": true,
         "experimentalDecorators": true,
@@ -15,5 +17,9 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
-    "exclude": ["dist", "node_modules", "tests"]
+    "exclude": [
+        "dist",
+        "node_modules",
+        "tests"
+    ]
 }

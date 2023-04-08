@@ -12,30 +12,42 @@ generator client {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  discordId   String @unique
-  totalScore  Int
-  updateTime DateTime @db.Timestamp(3)
-  createdAt DateTime @default(now())
+  id           String      @id @default(uuid())
+  discordId    String      @unique
+  totalScore   Int         @default(0)
+  updateTime   DateTime    @updatedAt
+  createdAt    DateTime    @default(now())
+  DailyImage   DailyImage? @relation(fields: [dailyImageId], references: [id])
+  dailyImageId String?
+
+  @@index([dailyImageId, totalScore])
 }
 
 model Room {
-  id          String   @id @default(uuid())
-  channel_id      String   @unique
+  id               String   @id @default(uuid())
+  channel_id       String   @unique
   owner_discord_id String
-  createdAt DateTime @default(now())
-  players      Player[]
+  createdAt        DateTime @default(now())
+  players          Player[]
 }
 
 model Player {
-  id          String   @id @default(uuid())
-  channel_id  String
-  room        Room     @relation(fields: [channel_id], references: [channel_id])
-  discordId   String
-  sequence    Int
-  prompt      String
-  totalScore  Int
-  createdAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  channel_id String
+  room       Room     @relation(fields: [channel_id], references: [channel_id])
+  discordId  String
+  sequence   Int
+  prompt     String
+  totalScore Int
+  createdAt  DateTime @default(now())
 
   @@index([channel_id])
+}
+
+model DailyImage {
+  id     String @id @default(uuid())
+  url    String
+  round  Int    @default(1) // count how many rounds have passed
+  prompt String
+  users  User[]
 }

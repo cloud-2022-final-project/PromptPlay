@@ -4,7 +4,7 @@ import { Lang } from '../../services/lang.js';
 import { Command, CommandDeferType } from './../command.js';
 import { EventData } from '../../models/internal-models.js';
 import { CustomClient } from '../../extensions/custom-client.js';
-import { sendDaily, targetChannel } from '../../jobs/daily.js';
+import { processDaily, targetChannel } from '../../jobs/daily.js';
 import { InteractionUtils } from '../../utils/interaction-utils.js';
 
 /**
@@ -19,7 +19,7 @@ export class ForceSendDaily implements Command {
     constructor(private client: CustomClient) {}
 
     async execute(intr: CommandInteraction, data: EventData): Promise<void> {
-        sendDaily(this.client, targetChannel);
+        processDaily(this.client, targetChannel);
         await InteractionUtils.send(intr, 'Done! ❤️');
     }
 }

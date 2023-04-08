@@ -31,9 +31,9 @@ export const processDaily = async (client: CustomClient, targetChannel: string) 
     // get the info of the current image and prompt
     const dailyImage = await prisma.dailyImage.findFirst({
         include: {
-            users: {
+            players: {
                 select: {
-                    totalScore: true,
+                    score: true,
                     discordId: true,
                 },
             },
@@ -54,10 +54,10 @@ export const processDaily = async (client: CustomClient, targetChannel: string) 
     }
 
     // Set the new image and prompt for the next day
-    const updatedDailyImage = await updateDailyImage(dailyImage.id);
+    const updatedDailyImage = await updateDailyImage(dailyImage.url);
 
     // report the results of the previous round's voting
-    await reportDailyResults(dailyImage, dailyImage.users, client, channel);
+    await reportDailyResults(dailyImage, dailyImage.players, client, channel);
 
     // send the new image
     await sendNewDailyImage(channel, updatedDailyImage);
@@ -96,19 +96,12 @@ const getNewImage = async (): Promise<{
 
 /**
  * This updates the daily image so that it has a new image url and prompt. All players of the new round are also reset.
- * @param id The id of the daily image to update
+ * @param url The url of the daily image to update
  * @returns The updated daily image
  */
-const updateDailyImage = async (id: string) => {
-    // remove all players for the next image
-    await prisma.user.updateMany({
-        where: {
-            dailyImageId: id,
-        },
-        data: {
-            dailyImageId: null,
-        },
-    });
+const updateDailyImage = async (url: string) => {
+    // remove all players for the next round
+    await prisma.dailyPlayer.deleteMany();
 
     // get a new image and prompt
     const newImage = await getNewImage();
@@ -116,7 +109,7 @@ const updateDailyImage = async (id: string) => {
     // set a new image and prompt
     return await prisma.dailyImage.update({
         where: {
-            id,
+            url,
         },
         data: {
             url: newImage.url,
@@ -139,12 +132,12 @@ async function reportDailyResults(
     dailyImage: DailyImage,
     dailyPlayers: {
         discordId: string;
-        totalScore: number;
+        score: number;
     }[],
     client: CustomClient,
     channel: TextChannel
 ) {
-    // get all discord users for their usernames
+    // get all discord users who play this round for their usernames
     const discordUsers = await Promise.all(
         dailyPlayers.map(async p => await ClientUtils.getUser(client, p.discordId))
     );
@@ -161,8 +154,7 @@ async function reportDailyResults(
             **Top 10 Players:**\n
             ${top10
                 .map(
-                    (discordUser, i) =>
-                        `${i + 1}. ${discordUser.username} ${dailyPlayers[i].totalScore}`
+                    (discordUser, i) => `${i + 1}. ${discordUser.username} ${dailyPlayers[i].score}`
                 )
                 .join('\n')}`);
     MessageUtils.send(channel, embed);
@@ -175,8 +167,8 @@ async function reportDailyResults(
                 .setImage(dailyImage.url)
                 .setTitle(`Round ${dailyImage.round} Results`).setDescription(`
                     **Prompt:** ${dailyImage.prompt}\n\n
-                    **Your Score:** ${dailyPlayers[i].totalScore} (highest score: ${
-                dailyPlayers[0].totalScore
+                    **Your Score:** ${dailyPlayers[i].score} (highest score: ${
+                dailyPlayers[0].score
             })
                     **Rank:** ${i + 1}/${dailyPlayers.length}`);
             MessageUtils.send(discordUser, embed);

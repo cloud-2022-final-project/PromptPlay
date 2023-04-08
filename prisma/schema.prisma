@@ -11,43 +11,56 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// This model represents a user for the app across all seasons.
 model User {
-  id           String      @id @default(uuid())
-  discordId    String      @unique
-  totalScore   Int         @default(0)
-  updateTime   DateTime    @updatedAt
-  createdAt    DateTime    @default(now())
-  DailyImage   DailyImage? @relation(fields: [dailyImageId], references: [id])
-  dailyImageId String?
-
-  @@index([dailyImageId, totalScore])
-}
-
-model Room {
-  id               String   @id @default(uuid())
-  channel_id       String   @unique
-  owner_discord_id String
-  createdAt        DateTime @default(now())
-  players          Player[]
-}
-
-model Player {
-  id         String   @id @default(uuid())
-  channel_id String
-  room       Room     @relation(fields: [channel_id], references: [channel_id])
-  discordId  String
-  sequence   Int
-  prompt     String
-  totalScore Int
+  discordId  String   @id
+  totalScore Float // total score across all rounds in the current season
+  updateTime DateTime @updatedAt
   createdAt  DateTime @default(now())
 
-  @@index([channel_id])
+  @@index([totalScore])
 }
 
-model DailyImage {
-  id     String @id @default(uuid())
-  url    String
-  round  Int    @default(1) // count how many rounds have passed
-  prompt String
-  users  User[]
+// This model represents a user's who has guessed for the current round of the daily game.
+// An instance of this is created when a user makes a first guess of the round.
+// It may be updated by following guesses.
+// All daily players are removed when the round ends.
+model DailyPlayer {
+  discordId     String     @id
+  prompt        String // the prompt that the user guessed for the current round
+  score         Float // score for the current prompt
+  dailyImageId  String
+  DailyImage    DailyImage @relation(fields: [dailyImageUrl], references: [url])
+  dailyImageUrl String
+
+  @@index([dailyImageUrl, score])
 }
+
+// There should be only one instance of this at all times.
+model DailyImage {
+  url     String        @id
+  round   Int           @default(1) // count how many rounds have passed
+  prompt  String // the true prompt for the current round
+  players DailyPlayer[] // all players who have guessed for the current round
+}
+
+// model Room {
+//   id               String   @id @default(uuid())
+//   channel_id       String   @unique
+//   owner_discord_id String
+//   createdAt        DateTime @default(now())
+//   players          Player[]
+// }
+
+// model Player {
+//   id         String   @id @default(uuid())
+//   channel_id String
+//   room       Room     @relation(fields: [channel_id], references: [channel_id])
+//   discordId  String
+//   sequence   Int
+//   prompt     String
+//   totalScore Int
+//   createdAt  DateTime @default(now())
+
+//   @@index([channel_id])
+// }

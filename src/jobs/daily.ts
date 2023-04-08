@@ -189,9 +189,13 @@ async function reportDailyResults(
  * @param dailyImage The daily image to send
  */
 const sendNewDailyImage = async (channel: TextChannel, dailyImage: DailyImage) => {
+    // TODO: get hint from ChatGPT.
+    const hint = 'This is a hint.';
+
     const embed = new EmbedBuilder()
         .setColor('Random')
         .setTitle(`Round ${dailyImage.round} starts now!`)
+        .setDescription(hint)
         .setImage(dailyImage.url);
     MessageUtils.send(channel, embed);
 };

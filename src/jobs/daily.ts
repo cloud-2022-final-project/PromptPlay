@@ -108,7 +108,7 @@ export class Daily implements Job {
 }
 
 /**
- * This function finds a new image and prompt to use for the next day from wherever the image is stored.
+ * This function finds a new image and prompt to use for the next day from wherever they are stored.
  * @returns The new image and prompt or null if there is no new image
  */
 const getNewImage = async (): Promise<{

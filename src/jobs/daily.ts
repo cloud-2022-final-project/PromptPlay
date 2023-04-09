@@ -121,7 +121,7 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
             url: newImage.url,
             active: true,
             round: {
-                decrement: 1,
+                increment: 1,
             },
         },
     });

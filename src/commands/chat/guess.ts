@@ -48,6 +48,18 @@ export class Guess implements Command {
         // get the current daily image
         const currentImg = await prisma.dailyImage.findFirst();
 
+        // check if there is an active (in play) daily image
+        if (!currentImg || !currentImg.active) {
+            await InteractionUtils.send(
+                intr,
+                new EmbedBuilder()
+                    .setColor('Red')
+                    .setTitle('😰😰😰')
+                    .setDescription('There is no active daily prompt. Please try again later.')
+            );
+            return;
+        }
+
         // get the score of the guess
         const currentScore = await getSimilarityScore(prompt, currentImg.prompt);
 

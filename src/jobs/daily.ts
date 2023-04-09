@@ -77,22 +77,46 @@ const _process = async (client: CustomClient, targetChannel: string) => {
         return;
     }
 
-    // report the results of the current round's voting
-    await reportDailyResults(dailyImage, dailyImage.players, client, channel);
+    // if the current image is active, report the results of the current round's voting
+    if (dailyImage.active) {
+        // remove all players so that the next round can start with no players
+        await prisma.dailyPlayer.deleteMany();
 
-    // if there is no new image, end the job
+        // report the results of the current round's voting
+        await reportDailyResults(dailyImage, dailyImage.players, client, channel);
+    }
+
+    // if there is no new image, set the current daily image as inactive
+    // and end the job
     if (!newImage) {
-        // remove the current daily image record from the database
-        // this tells us that there is no more daily image in play
-        await prisma.dailyImage.deleteMany();
+        await prisma.dailyImage.update({
+            where: {
+                url: dailyImage.url,
+            },
+            data: {
+                active: false,
+            },
+        });
         return;
     }
 
-    // Set the new image and prompt for the next day
-    const updatedDailyImage = await updateDailyImage(dailyImage.url, newImage);
+    // Update the current daily image with the new image and prompt
+    const newDailyImage = await prisma.dailyImage.update({
+        where: {
+            url: dailyImage.url,
+        },
+        data: {
+            prompt: newImage.prompt,
+            url: newImage.url,
+            active: true,
+            round: {
+                decrement: 1,
+            },
+        },
+    });
 
     // send the new image
-    await sendNewDailyImage(channel, updatedDailyImage);
+    await sendNewDailyImage(channel, newDailyImage);
 };
 
 /**
@@ -132,36 +156,6 @@ const getNewImage = async (): Promise<{
     }
 
     return null;
-};
-
-/**
- * This updates the daily image so that it has a new image url and prompt. All players of the new round are also reset.
- * @param url The url of the daily image to update
- * @returns The updated daily image
- */
-const updateDailyImage = async (
-    url: string,
-    newImage: {
-        url: string;
-        prompt: string;
-    }
-) => {
-    // remove all players for the next round
-    await prisma.dailyPlayer.deleteMany();
-
-    // set a new image and prompt
-    return await prisma.dailyImage.update({
-        where: {
-            url,
-        },
-        data: {
-            url: newImage.url,
-            prompt: newImage.prompt,
-            round: {
-                increment: 1,
-            },
-        },
-    });
 };
 
 /**

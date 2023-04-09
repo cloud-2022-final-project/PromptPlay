@@ -29,7 +29,7 @@ model DailyPlayer {
   discordId     String     @id
   prompt        String // the prompt that the user guessed for the current round
   score         Float // score for the current prompt
-  DailyImage    DailyImage @relation(fields: [dailyImageUrl], references: [url])
+  DailyImage    DailyImage @relation(fields: [dailyImageUrl], references: [url], onDelete: Cascade)
   dailyImageUrl String
 
   @@index([dailyImageUrl, score])
@@ -38,14 +38,15 @@ model DailyPlayer {
 // There should be only one instance of this at all times.
 model DailyImage {
   url     String        @id
+  active  Boolean       @default(true) // whether the current image is in use
   round   Int           @default(1) // count how many rounds have passed
   prompt  String // the true prompt for the current round
   players DailyPlayer[] // all players who have guessed for the current round
 }
 
 model ImageStore {
-  url     String        @id
-  prompt  String // the true prompt for the current round
+  url    String @id
+  prompt String // the true prompt for the current round
 }
 
 // model Room {

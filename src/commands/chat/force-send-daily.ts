@@ -14,12 +14,19 @@ import { InteractionUtils } from '../../utils/interaction-utils.js';
 export class ForceSendDaily implements Command {
     names = [Lang.getRef('chatCommands.forceSendDaily', Language.Default)];
     requireClientPerms: PermissionsString[] = ['Administrator'];
-    deferType: CommandDeferType = CommandDeferType.PUBLIC;
+    deferType: CommandDeferType = CommandDeferType.HIDDEN;
 
     constructor(private client: CustomClient) {}
 
     async execute(intr: CommandInteraction, data: EventData): Promise<void> {
-        processDaily(this.client, targetChannel);
-        await InteractionUtils.send(intr, 'Done! ❤️');
+        const hasNextImage = await processDaily(this.client, targetChannel);
+        if (hasNextImage) {
+            await InteractionUtils.send(intr, 'Done! ❤️');
+            return;
+        }
+        await InteractionUtils.send(
+            intr,
+            'Done! ❤️\nThere is no next image to play for the next round though.'
+        );
     }
 }

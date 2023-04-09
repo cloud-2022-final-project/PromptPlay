@@ -19,15 +19,22 @@ export let processingDaily = false;
  * Forcefully does the `Daily` job.
  * @param client The client to send the image with.
  * @param targetChannel The name of the channel to send the image to.
+ * @returns `true` if there is a new image to play with, `false` otherwise.
  */
-export const processDaily = (client: CustomClient, targetChannel: string) => {
+export const processDaily = async (
+    client: CustomClient,
+    targetChannel: string
+): Promise<boolean> => {
     processingDaily = true;
-    _process(client, targetChannel).finally(() => {
+    return _process(client, targetChannel).finally(() => {
         processingDaily = false;
     });
 };
 
-const _process = async (client: CustomClient, targetChannel: string) => {
+/**
+ * @returns `true` if there is a new image to play with, `false` otherwise.
+ */
+const _process = async (client: CustomClient, targetChannel: string): Promise<boolean> => {
     // Find the channel by name
     const channel = client.channels.cache.find(
         c => c.type === ChannelType.GuildText && c.name === targetChannel
@@ -64,7 +71,7 @@ const _process = async (client: CustomClient, targetChannel: string) => {
     if (!dailyImage) {
         if (!newImage) {
             // we have literally no images, so we can't do anything
-            return;
+            return false;
         }
 
         // create a fresh daily image
@@ -78,7 +85,7 @@ const _process = async (client: CustomClient, targetChannel: string) => {
         // send the new image to the channel
         await sendNewDailyImage(channel, dailyImage);
 
-        return;
+        return true;
     }
 
     // if the current image is active, report the results of the current round's voting
@@ -101,7 +108,7 @@ const _process = async (client: CustomClient, targetChannel: string) => {
                 active: false,
             },
         });
-        return;
+        return false;
     }
 
     // Update the current daily image with the new image and prompt
@@ -121,6 +128,7 @@ const _process = async (client: CustomClient, targetChannel: string) => {
 
     // send the new image
     await sendNewDailyImage(channel, newDailyImage);
+    return true;
 };
 
 /**

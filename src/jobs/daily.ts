@@ -120,7 +120,6 @@ const getNewImage = async (): Promise<{
     url: string;
     prompt: string;
 } | null> => {
-    // TODO: get a new image and its prompt
     const newImage = await prisma.imageStore.findFirst();
 
     if (newImage) {
@@ -129,11 +128,9 @@ const getNewImage = async (): Promise<{
                 url: newImage.url,
             },
         });
-        return {
-            prompt: newImage.prompt,
-            url: newImage.url,
-        };
+        return newImage;
     }
+
     return null;
 };
 

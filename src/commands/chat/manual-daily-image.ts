@@ -17,21 +17,35 @@ export class ManualAddDailyImage implements Command {
     public async execute(intr: ChatInputCommandInteraction, data: EventData): Promise<void> {
         const attachment = intr.options.get('image')?.attachment;
         const url = attachment?.url;
-        const prompt = intr.options.get('prompt')?.value;
+        const prompt = intr.options.get('prompt')?.value as string;
 
-        // TODO: Store the image url and prompt.
+        const embed = new EmbedBuilder();
+
+        if (!url || !prompt) {
+            await InteractionUtils.send(
+                intr,
+                embed
+                    .setTitle('Invalid Arguments')
+                    .setColor('Red')
+                    .setDescription('Please provide a valid `image` and `prompt`')
+            );
+            return;
+        }
 
         await prisma.imageStore.create({
             data: {
-                url: url,
-                prompt: String(prompt),
+                url,
+                prompt,
             },
         });
-        const embed = new EmbedBuilder()
-            .setImage(url)
-            .setColor('Random')
-            .setTitle('Prompt Received!')
-            .setDescription(`"\`${prompt}\`"`);
-        await InteractionUtils.send(intr, embed);
+
+        await InteractionUtils.send(
+            intr,
+            embed
+                .setImage(url)
+                .setColor('Green')
+                .setTitle('Prompt Received!')
+                .setDescription(`"\`${prompt}\`"`)
+        );
     }
 }

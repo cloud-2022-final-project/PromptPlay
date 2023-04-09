@@ -61,7 +61,7 @@ export class Guess implements Command {
         }
 
         // get the score of the guess
-        const currentScore = await getSimilarityScore(prompt, currentImg.prompt);
+        const newScore = await getSimilarityScore(prompt, currentImg.prompt);
 
         // create a user if they don't exist
         await prisma.user.upsert({
@@ -75,30 +75,65 @@ export class Guess implements Command {
         });
 
         // create a daily player if they don't exist or update their guess info
-        const savedPrompt = (
-            await prisma.dailyPlayer.upsert({
-                where: {
-                    discordId: intr.user.id,
-                },
-                create: {
-                    discordId: intr.user.id,
-                    prompt,
-                    score: currentScore,
-                    dailyImageUrl: currentImg.url,
-                },
-                update: {
-                    prompt,
-                    score: currentScore,
-                },
-                select: {
-                    prompt: true,
-                },
-            })
-        ).prompt;
+        const existingPlayer = await prisma.dailyPlayer.findFirst({
+            where: {
+                discordId: intr.user.id,
+            },
+            select: {
+                score: true,
+            },
+        });
+
+        if (existingPlayer) {
+            // has guessed before for this daily image
+            await Promise.all([
+                prisma.dailyPlayer.update({
+                    where: {
+                        discordId: intr.user.id,
+                    },
+                    data: {
+                        prompt,
+                        score: newScore,
+                        dailyImageUrl: currentImg.url,
+                    },
+                }),
+                prisma.user.update({
+                    where: {
+                        discordId: intr.user.id,
+                    },
+                    data: {
+                        totalScore: {
+                            increment: newScore - existingPlayer.score, // increment by the difference because the score is being updated
+                        },
+                    },
+                }),
+            ]);
+        } else {
+            await Promise.all([
+                prisma.dailyPlayer.create({
+                    data: {
+                        discordId: intr.user.id,
+                        prompt,
+                        score: newScore,
+                        dailyImageUrl: currentImg.url,
+                    },
+                }),
+                prisma.user.update({
+                    where: {
+                        discordId: intr.user.id,
+                    },
+                    data: {
+                        totalScore: {
+                            increment: newScore, // increment by the new score
+                        },
+                    },
+                }),
+            ]);
+        }
 
         await InteractionUtils.send(
             intr,
-            new EmbedBuilder().setTitle('Prompt received!').setDescription(`"\`${savedPrompt}\`"`)
+            new EmbedBuilder().setTitle('Prompt received!').setDescription(`"\`${prompt}\`"`)
         );
     }
 }

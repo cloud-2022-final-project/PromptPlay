@@ -205,9 +205,9 @@ async function reportDailyResults(
             ${top10
                 .map(
                     (discordUser, i) =>
-                        `${i + 1}. ${discordUser.username}#${discordUser.banner} \`${
+                        `${i + 1}. ${discordUser.tag} 👉 \`${
                             dailyPlayers[i].prompt
-                        }\` ${dailyPlayers[i].score.toFixed(2)}`
+                        }\` 💯 ${dailyPlayers[i].score.toFixed(2)}`
                 )
                 .join('\n')}`);
     MessageUtils.send(channel, embed);
@@ -221,9 +221,9 @@ async function reportDailyResults(
                 .setTitle(`Round ${dailyImage.round} Results`).setDescription(`
                     **Answer:** \`${dailyImage.prompt}\`
                     **Your Prompt:** \`${dailyPlayers[i].prompt}\`
-                    **Your Score:** ${dailyPlayers[i].score} (highest score: ${
-                dailyPlayers[0].score
-            })
+                    **Your Score:** ${dailyPlayers[i].score.toFixed(
+                        2
+                    )} (highest score: ${dailyPlayers[0].score.toFixed(2)})
                     **Rank:** ${i + 1}/${dailyPlayers.length}`);
             MessageUtils.send(discordUser, embed);
         })

@@ -87,6 +87,14 @@ export const ChatCommandMetadata: {
         description_localizations: Lang.getRefLocalizationMap('commandDescs.guess'),
         dm_permission: false,
         default_member_permissions: undefined,
+        options: [
+            {
+                name: 'prompt',
+                description: 'Prompt for the image',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+            },
+        ],
     },
     DAILY: {
         type: ApplicationCommandType.ChatInput,

@@ -15,7 +15,6 @@ export class Guess implements Command {
     public requireClientPerms: PermissionsString[] = [];
 
     public async execute(intr: ChatInputCommandInteraction, data: EventData): Promise<void> {
-        console.log(processingDaily);
         if (processingDaily) {
             await InteractionUtils.send(
                 intr,
@@ -29,8 +28,23 @@ export class Guess implements Command {
             return;
         }
 
-        const user = intr.user;
+        // get the prompt
+        const prompt = intr.options.getString('prompt');
 
-        await InteractionUtils.send(intr, `Hello ${user.username}`);
+        // check if the prompt is valid
+        if (!prompt) {
+            await InteractionUtils.send(
+                intr,
+                new EmbedBuilder()
+                    .setColor('Random')
+                    .setTitle('Nope!')
+                    .setDescription('Please enter the `prompt` named option.')
+            );
+            return;
+        }
+
+        // TODO: do something with the prompt
+
+        await InteractionUtils.send(intr, `Your prompt is ${prompt}`);
     }
 }

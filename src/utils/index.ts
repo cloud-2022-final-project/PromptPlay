@@ -16,7 +16,7 @@ export { ShardUtils } from './shard-utils.js';
 export { StringUtils } from './string-utils.js';
 export { ThreadUtils } from './thread-utils.js';
 
-const requiredChannels = [daily, '1', '2', '3'];
+const requiredChannels = [daily];
 
 /**
  * Creates the required channels if they don't exist.

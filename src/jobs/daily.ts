@@ -81,6 +81,9 @@ const _process = async (client: CustomClient, targetChannel: string) => {
 
     // if there is no new image, end the job
     if (!newImage) {
+        // remove the current daily image record from the database
+        // this tells us that there is no more daily image in play
+        await prisma.dailyImage.deleteMany();
         return;
     }
 

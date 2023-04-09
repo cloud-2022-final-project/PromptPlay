@@ -21,7 +21,7 @@ export class Guess implements Command {
             await InteractionUtils.send(
                 intr,
                 new EmbedBuilder()
-                    .setColor('Random')
+                    .setColor('Red')
                     .setTitle('Nope!')
                     .setDescription(
                         'The daily result is being processed! Please try again in a few minutes.'
@@ -38,7 +38,7 @@ export class Guess implements Command {
             await InteractionUtils.send(
                 intr,
                 new EmbedBuilder()
-                    .setColor('Random')
+                    .setColor('Red')
                     .setTitle('Nope!')
                     .setDescription('Please enter the `prompt` named option.')
             );

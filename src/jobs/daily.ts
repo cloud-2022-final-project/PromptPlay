@@ -184,7 +184,7 @@ async function reportDailyResults(
 
     // send current image, prompt, and top 10 players publicly to the channel
     const embed = new EmbedBuilder()
-        .setColor('Random')
+        .setColor('Yellow')
         .setTitle(`Round ${dailyImage.round} Results`)
         .setImage(dailyImage.url).setDescription(`
             **Prompt:** ${dailyImage.prompt}\n\n
@@ -200,7 +200,7 @@ async function reportDailyResults(
     await Promise.all(
         discordUsers.map(async (discordUser, i) => {
             const embed = new EmbedBuilder()
-                .setColor('Random')
+                .setColor('Yellow')
                 .setImage(dailyImage.url)
                 .setTitle(`Round ${dailyImage.round} Results`).setDescription(`
                     **Prompt:** ${dailyImage.prompt}\n\n
@@ -221,7 +221,7 @@ async function reportDailyResults(
 const sendNewDailyImage = async (channel: TextChannel, dailyImage: DailyImage) => {
     const hint = await ChatGPT.hint(dailyImage.prompt);
     const embed = new EmbedBuilder()
-        .setColor('Random')
+        .setColor('Green')
         .setTitle(`Round ${dailyImage.round} starts now!`)
         .setDescription(hint)
         .setImage(dailyImage.url);

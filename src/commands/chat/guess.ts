@@ -45,6 +45,6 @@ export class Guess implements Command {
 
         // TODO: do something with the prompt
 
-        await InteractionUtils.send(intr, `Your prompt is ${prompt}`);
+        await InteractionUtils.send(intr, `Your prompt is "\`${prompt}\`".`);
     }
 }

@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, EmbedBuilder, PermissionsString } from 'di
 import { Command, CommandDeferType } from '../command.js';
 import { EventData } from '../../models/internal-models.js';
 import { InteractionUtils } from '../../utils/index.js';
+import { prisma } from '../../prisma.js';
 
 export const manualDailyImageCommandName = 'add-daily-image';
 
@@ -20,6 +21,12 @@ export class ManualAddDailyImage implements Command {
 
         // TODO: Store the image url and prompt.
 
+        await prisma.imageStore.create({
+            data: {
+                url: url,
+                prompt: String(prompt),
+            },
+        });
         const embed = new EmbedBuilder()
             .setImage(url)
             .setColor('Random')

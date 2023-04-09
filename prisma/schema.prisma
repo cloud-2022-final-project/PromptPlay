@@ -44,6 +44,11 @@ model DailyImage {
   players DailyPlayer[] // all players who have guessed for the current round
 }
 
+model ImageStore {
+  url     String        @id
+  prompt  String // the true prompt for the current round
+}
+
 // model Room {
 //   id               String   @id @default(uuid())
 //   channel_id       String   @unique

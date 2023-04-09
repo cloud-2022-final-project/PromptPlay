@@ -121,10 +121,20 @@ const getNewImage = async (): Promise<{
     prompt: string;
 } | null> => {
     // TODO: get a new image and its prompt
-    return {
-        prompt: 'This is a prompt.',
-        url: 'https://i.redd.it/k7xzx3bq4lb71.jpg',
-    };
+    const newImage = await prisma.imageStore.findFirst();
+
+    if (newImage) {
+        await prisma.imageStore.delete({
+            where: {
+                url: newImage.url,
+            },
+        });
+        return {
+            prompt: newImage.prompt,
+            url: newImage.url,
+        };
+    }
+    return null;
 };
 
 /**

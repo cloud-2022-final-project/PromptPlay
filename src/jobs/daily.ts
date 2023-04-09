@@ -6,6 +6,7 @@ import { prisma } from '../prisma.js';
 import { ClientUtils } from '../utils/client-utils.js';
 import { MessageUtils } from '../utils/message-utils.js';
 import { DailyImage } from '@prisma/client';
+import { ChatGPT } from '../services/chatpgt.js';
 
 export const targetChannel = 'daily';
 
@@ -217,9 +218,7 @@ async function reportDailyResults(
  * @param dailyImage The daily image to send
  */
 const sendNewDailyImage = async (channel: TextChannel, dailyImage: DailyImage) => {
-    // TODO: get hint from ChatGPT.
-    const hint = 'This is a hint.';
-
+    const hint = await ChatGPT.hint(dailyImage.prompt);
     const embed = new EmbedBuilder()
         .setColor('Random')
         .setTitle(`Round ${dailyImage.round} starts now!`)

@@ -31,7 +31,6 @@ export class Guess implements Command {
         }
 
         // get the prompt from the named option
-        console.log(intr.options);
         const prompt = intr.options.get('prompt')?.value as string;
 
         // check if the prompt is valid
@@ -46,73 +45,63 @@ export class Guess implements Command {
             return;
         }
 
-        // TODO: do something with the prompt
-
-        await InteractionUtils.send(intr, `Your prompt is "\`${prompt}\`".`);
-
+        // get the current daily image
         const currentImg = await prisma.dailyImage.findFirst();
 
-        function getScore(guessedPrompt: string, truePrompt: string): Promise<number> {
-            return fetch(
-                `https://cal-score.vercel.app/api/score?a=${guessedPrompt}&b=${truePrompt}`
-            )
-                .then(async response => {
-                    if (response.ok) {
-                        return Number(((await response.json()) as number) * 100);
-                    } else {
-                        throw new Error('Network response was not ok.');
-                    }
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                    throw error; // rethrow the error so the caller can handle it
-                });
-        }
+        // get the score of the guess
+        const currentScore = await getSimilarityScore(prompt, currentImg.prompt);
 
-        const currentScore = await getScore(prompt, currentImg.prompt);
-
-        //create a record in the database of User and DalilyPlayer, if not exist
-        const user = await prisma.user.findUnique({
+        // create a user if they don't exist
+        await prisma.user.upsert({
             where: {
                 discordId: intr.user.id,
             },
-        });
-
-        if (!user) {
-            await prisma.user.create({
-                data: {
-                    discordId: intr.user.id,
-                    totalScore: 0,
-                },
-            });
-        }
-
-        const dailyPlayer = await prisma.dailyPlayer.findUnique({
-            where: {
+            create: {
                 discordId: intr.user.id,
             },
+            update: {},
         });
 
-        if (!dailyPlayer) {
-            await prisma.dailyPlayer.create({
-                data: {
-                    discordId: intr.user.id,
-                    prompt: prompt,
-                    score: currentScore,
-                    dailyImageId: currentImg.url,
-                    dailyImageUrl: currentImg.url,
-                },
-            });
-        } else {
-            await prisma.dailyPlayer.update({
+        // create a daily player if they don't exist or update their guess info
+        const savedPrompt = (
+            await prisma.dailyPlayer.upsert({
                 where: {
                     discordId: intr.user.id,
                 },
-                data: {
-                    prompt: prompt,
+                create: {
+                    discordId: intr.user.id,
+                    prompt,
+                    score: currentScore,
+                    dailyImageUrl: currentImg.url,
+                },
+                update: {
+                    prompt,
                     score: currentScore,
                 },
-            });
-        }
+                select: {
+                    prompt: true,
+                },
+            })
+        ).prompt;
+
+        await InteractionUtils.send(
+            intr,
+            new EmbedBuilder().setTitle('Prompt received!').setDescription(`"\`${savedPrompt}\`"`)
+        );
     }
+}
+
+async function getSimilarityScore(sentenceA: string, sentenceB: string): Promise<number> {
+    return fetch(`https://cal-score.vercel.app/api/score?a=${sentenceA}&b=${sentenceB}`)
+        .then(async response => {
+            if (response.ok) {
+                return Number(((await response.json()) as number) * 100);
+            } else {
+                throw new Error('Network response was not ok.');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+            throw error; // rethrow the error so the caller can handle it
+        });
 }

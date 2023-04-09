@@ -14,7 +14,7 @@ generator client {
 // This model represents a user for the app across all seasons.
 model User {
   discordId  String   @id
-  totalScore Float // total score across all rounds in the current season
+  totalScore Float    @default(0) // total score across all rounds in the current season
   updateTime DateTime @updatedAt
   createdAt  DateTime @default(now())
 
@@ -29,7 +29,6 @@ model DailyPlayer {
   discordId     String     @id
   prompt        String // the prompt that the user guessed for the current round
   score         Float // score for the current prompt
-  dailyImageId  String
   DailyImage    DailyImage @relation(fields: [dailyImageUrl], references: [url])
   dailyImageUrl String
 

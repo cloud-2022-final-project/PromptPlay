@@ -88,7 +88,13 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
         return true;
     }
 
-    // if the current image is active, report the results of the current round's voting
+    // if there are no players, keep the current image and prompt so that
+    // we don't waste the current image
+    if (dailyImage.players.length === 0) {
+        return false;
+    }
+
+    // if the current image is active and there are players
     if (dailyImage.active) {
         // remove all players so that the next round can start with no players
         await prisma.dailyPlayer.deleteMany();

@@ -2,6 +2,7 @@ import { PermissionsString, ChatInputCommandInteraction, EmbedBuilder } from 'di
 import { EventData } from '../../models/internal-models.js';
 import { InteractionUtils } from '../../utils/interaction-utils.js';
 import { Command, CommandDeferType } from '../command.js';
+import { ChatGPT } from '../../services/chatpgt.js';
 
 export const genPromptCommandName = 'gen-prompt';
 
@@ -11,7 +12,10 @@ export class GenPrompt implements Command {
     public requireClientPerms: PermissionsString[] = ['Administrator'];
 
     public async execute(intr: ChatInputCommandInteraction, _: EventData): Promise<void> {
-        const prompt = 'This is a mock generated prompt.';
-        await InteractionUtils.send(intr, new EmbedBuilder().setDescription(prompt));
+        const prompt = await ChatGPT.randomPrompt();
+        await InteractionUtils.send(
+            intr,
+            new EmbedBuilder().setTitle('Here is your prompt!').setDescription(prompt)
+        );
     }
 }

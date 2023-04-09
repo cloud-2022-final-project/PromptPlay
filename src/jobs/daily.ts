@@ -45,9 +45,13 @@ const _process = async (client: CustomClient, targetChannel: string) => {
     const dailyImage = await prisma.dailyImage.findFirst({
         include: {
             players: {
+                orderBy: {
+                    score: 'desc',
+                },
                 select: {
                     score: true,
                     discordId: true,
+                    prompt: true,
                 },
             },
         },
@@ -170,6 +174,7 @@ async function reportDailyResults(
     dailyPlayers: {
         discordId: string;
         score: number;
+        prompt: string;
     }[],
     client: CustomClient,
     channel: TextChannel
@@ -187,11 +192,14 @@ async function reportDailyResults(
         .setColor('Yellow')
         .setTitle(`Round ${dailyImage.round} Results`)
         .setImage(dailyImage.url).setDescription(`
-            **Prompt:** ${dailyImage.prompt}\n\n
+            **Answer:** \`${dailyImage.prompt}\`\n
             **Top 10 Players:**\n
             ${top10
                 .map(
-                    (discordUser, i) => `${i + 1}. ${discordUser.username} ${dailyPlayers[i].score}`
+                    (discordUser, i) =>
+                        `${i + 1}. ${discordUser.username}#${discordUser.banner} \`${
+                            dailyPlayers[i].prompt
+                        }\` ${dailyPlayers[i].score.toFixed(2)}`
                 )
                 .join('\n')}`);
     MessageUtils.send(channel, embed);
@@ -203,7 +211,8 @@ async function reportDailyResults(
                 .setColor('Yellow')
                 .setImage(dailyImage.url)
                 .setTitle(`Round ${dailyImage.round} Results`).setDescription(`
-                    **Prompt:** ${dailyImage.prompt}\n\n
+                    **Answer:** \`${dailyImage.prompt}\`
+                    **Your Prompt:** \`${dailyPlayers[i].prompt}\`
                     **Your Score:** ${dailyPlayers[i].score} (highest score: ${
                 dailyPlayers[0].score
             })

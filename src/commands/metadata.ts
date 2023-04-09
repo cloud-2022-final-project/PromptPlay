@@ -9,6 +9,7 @@ import {
 import { Args } from './index.js';
 import { Language } from '../models/enum-helpers/index.js';
 import { Lang } from '../services/index.js';
+import { genPromptCommandName } from './chat/gen-prompt.js';
 
 export const ChatCommandMetadata: {
     [command: string]: RESTPostAPIChatInputApplicationCommandsJSONBody;
@@ -140,6 +141,13 @@ export const ChatCommandMetadata: {
                 required: true,
             },
         ],
+    },
+    GEN_PROMPT: {
+        type: ApplicationCommandType.ChatInput,
+        name: genPromptCommandName,
+        description: 'Get a random prompt',
+        dm_permission: false,
+        default_member_permissions: undefined,
     },
 };
 

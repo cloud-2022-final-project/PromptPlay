@@ -1,22 +1,36 @@
-import { ChatInputCommandInteraction, PermissionsString } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder, PermissionsString } from 'discord.js';
 import { Lang } from '../../services/index.js';
 import { Command, CommandDeferType } from '../command.js';
 import { EventData } from '../../models/internal-models.js';
 import { InteractionUtils } from '../../utils/index.js';
 import { Language } from '../../models/enum-helpers/index.js';
+import { processingDaily } from '../../jobs/daily.js';
 
 /**
  * This command handles when a player makes a guess.
  */
 export class Guess implements Command {
     public names = [Lang.getRef('chatCommands.guess', Language.Default)];
-    public deferType = CommandDeferType.PUBLIC;
+    public deferType = CommandDeferType.HIDDEN;
     public requireClientPerms: PermissionsString[] = [];
 
     public async execute(intr: ChatInputCommandInteraction, data: EventData): Promise<void> {
+        console.log(processingDaily);
+        if (processingDaily) {
+            await InteractionUtils.send(
+                intr,
+                new EmbedBuilder()
+                    .setColor('Random')
+                    .setTitle('Nope!')
+                    .setDescription(
+                        'The daily result is being processed! Please try again in a few minutes.'
+                    )
+            );
+            return;
+        }
+
         const user = intr.user;
 
-        // await InteractionUtils.send(intr, Lang.getEmbed('displayEmbeds.test', data.lang));
         await InteractionUtils.send(intr, `Hello ${user.username}`);
     }
 }

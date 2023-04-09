@@ -70,11 +70,11 @@ async function start(): Promise<void> {
         new TestCommand(),
 
         // game commands
-        new NewRoom(),
-        new JoinRoom(),
-        new Start(),
+        // new NewRoom(),
+        // new JoinRoom(),
+        // new Start(),
         new Guess(),
-        new SubmitImage(),
+        // new SubmitImage(),
 
         // dev commands for us to use
         new ForceSendDaily(client),

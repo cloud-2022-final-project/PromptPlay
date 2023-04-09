@@ -19,10 +19,11 @@ export let processingDaily = false;
  * @param client The client to send the image with.
  * @param targetChannel The name of the channel to send the image to.
  */
-export const processDaily = async (client: CustomClient, targetChannel: string) => {
+export const processDaily = (client: CustomClient, targetChannel: string) => {
     processingDaily = true;
-    await _process(client, targetChannel);
-    processingDaily = false;
+    _process(client, targetChannel).finally(() => {
+        processingDaily = false;
+    });
 };
 
 const _process = async (client: CustomClient, targetChannel: string) => {

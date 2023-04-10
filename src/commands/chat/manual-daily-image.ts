@@ -12,7 +12,7 @@ export const manualDailyImageCommandName = 'add-daily-image';
 export class ManualAddDailyImage implements Command {
     public names = [manualDailyImageCommandName];
     public deferType = CommandDeferType.HIDDEN;
-    public requireClientPerms: PermissionsString[] = ['Administrator'];
+    public requireClientPerms: PermissionsString[] = [];
 
     public async execute(intr: ChatInputCommandInteraction, data: EventData): Promise<void> {
         const attachment = intr.options.get('image')?.attachment;

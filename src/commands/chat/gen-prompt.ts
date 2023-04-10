@@ -9,7 +9,7 @@ export const genPromptCommandName = 'gen-prompt';
 export class GenPrompt implements Command {
     public names = [genPromptCommandName];
     public deferType = CommandDeferType.HIDDEN;
-    public requireClientPerms: PermissionsString[] = ['Administrator'];
+    public requireClientPerms: PermissionsString[] = [];
 
     public async execute(intr: ChatInputCommandInteraction, _: EventData): Promise<void> {
         const prompt = await ChatGPT.randomPrompt();

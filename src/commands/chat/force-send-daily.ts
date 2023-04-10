@@ -13,7 +13,7 @@ import { InteractionUtils } from '../../utils/interaction-utils.js';
  */
 export class ForceSendDaily implements Command {
     names = [Lang.getRef('chatCommands.forceSendDaily', Language.Default)];
-    requireClientPerms: PermissionsString[] = ['Administrator'];
+    requireClientPerms: PermissionsString[] = [];
     deferType: CommandDeferType = CommandDeferType.HIDDEN;
 
     constructor(private client: CustomClient) {}

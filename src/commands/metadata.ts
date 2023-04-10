@@ -2,6 +2,7 @@ import { manualDailyImageCommandName } from './chat/manual-daily-image.js';
 import {
     ApplicationCommandOptionType,
     ApplicationCommandType,
+    PermissionFlagsBits,
     RESTPostAPIChatInputApplicationCommandsJSONBody,
     RESTPostAPIContextMenuApplicationCommandsJSONBody,
 } from 'discord.js';
@@ -21,7 +22,6 @@ export const ChatCommandMetadata: {
         description: Lang.getRef('commandDescs.help', Language.Default),
         description_localizations: Lang.getRefLocalizationMap('commandDescs.help'),
         dm_permission: true,
-        default_member_permissions: undefined,
         options: [
             {
                 ...Args.HELP_OPTION,
@@ -36,7 +36,6 @@ export const ChatCommandMetadata: {
         description: Lang.getRef('commandDescs.info', Language.Default),
         description_localizations: Lang.getRefLocalizationMap('commandDescs.info'),
         dm_permission: true,
-        default_member_permissions: undefined,
         options: [
             {
                 ...Args.INFO_OPTION,
@@ -51,7 +50,6 @@ export const ChatCommandMetadata: {
         description: Lang.getRef('commandDescs.test', Language.Default),
         description_localizations: Lang.getRefLocalizationMap('commandDescs.test'),
         dm_permission: true,
-        default_member_permissions: undefined,
     },
     // NEW_ROOM: {
     //     type: ApplicationCommandType.ChatInput,
@@ -87,7 +85,6 @@ export const ChatCommandMetadata: {
         description: Lang.getRef('commandDescs.guess', Language.Default),
         description_localizations: Lang.getRefLocalizationMap('commandDescs.guess'),
         dm_permission: false,
-        default_member_permissions: undefined,
         options: [
             {
                 name: 'prompt',
@@ -104,7 +101,7 @@ export const ChatCommandMetadata: {
         description: Lang.getRef('commandDescs.forceSendDaily', Language.Default),
         description_localizations: Lang.getRefLocalizationMap('commandDescs.forceSendDaily'),
         dm_permission: false,
-        default_member_permissions: undefined,
+        default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     },
     // SUBMIT_IMAGE: {
     //     type: ApplicationCommandType.ChatInput,
@@ -126,7 +123,6 @@ export const ChatCommandMetadata: {
         name: manualDailyImageCommandName,
         description: 'Manually submit a daily image',
         dm_permission: false,
-        default_member_permissions: undefined,
         options: [
             {
                 name: 'prompt',
@@ -147,7 +143,7 @@ export const ChatCommandMetadata: {
         name: genPromptCommandName,
         description: 'Get a random prompt',
         dm_permission: false,
-        default_member_permissions: undefined,
+        default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     },
 };
 

@@ -96,11 +96,12 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
             return false;
         }
 
-        // remove all players so that the next round can start with no players
-        await prisma.dailyPlayer.deleteMany();
-
-        // report the results of the current round's voting
-        await reportDailyResults(dailyImage, dailyImage.players, client, channel);
+        await Promise.all([
+            // remove all players so that the next round can start with no players
+            prisma.dailyPlayer.deleteMany(),
+            // report the results of the current round's voting
+            reportDailyResults(dailyImage, dailyImage.players, client, channel),
+        ]);
     }
 
     // get a new image and prompt for the next round

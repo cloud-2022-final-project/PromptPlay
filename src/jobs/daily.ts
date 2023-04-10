@@ -64,13 +64,13 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
         },
     });
 
-    // get a new image and prompt for the next round
-    const newImage = await getNewImage();
-
     // if there is no current image, create a new one and send it
     if (!dailyImage) {
+        // get a new image and prompt for the next round
+        const newImage = await getNewImage();
+
+        // we have literally no images, so we can't do anything
         if (!newImage) {
-            // we have literally no images, so we can't do anything
             return false;
         }
 
@@ -88,20 +88,23 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
         return true;
     }
 
-    // if there are no players, keep the current image and prompt so that
-    // we don't waste the current image
-    if (dailyImage.players.length === 0) {
-        return false;
-    }
-
-    // if the current image is active and there are players
+    // if the current image is active (in play)
     if (dailyImage.active) {
+        // if there are no players,
+        // keep the current image and prompt so that we don't waste the current image
+        if (dailyImage.players.length === 0) {
+            return false;
+        }
+
         // remove all players so that the next round can start with no players
         await prisma.dailyPlayer.deleteMany();
 
         // report the results of the current round's voting
         await reportDailyResults(dailyImage, dailyImage.players, client, channel);
     }
+
+    // get a new image and prompt for the next round
+    const newImage = await getNewImage();
 
     // if there is no new image, set the current daily image as inactive
     // and end the job

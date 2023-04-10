@@ -93,7 +93,7 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
         // if there are no players,
         // keep the current image and prompt so that we don't waste the current image
         if (dailyImage.players.length === 0) {
-            return false;
+            return true;
         }
 
         await Promise.all([

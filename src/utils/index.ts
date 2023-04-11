@@ -1,7 +1,9 @@
-import { targetChannel as daily } from './../jobs/daily.js';
+import axios from 'axios';
 import { Guild } from 'discord.js';
-import { Logger } from '../services/logger.js';
+import mime from 'mime';
 
+import { targetChannel as daily } from '../jobs/daily.js';
+import { Logger } from '../services/logger.js';
 export { ClientUtils } from './client-utils.js';
 export { CommandUtils } from './command-utils.js';
 export { FormatUtils } from './format-utils.js';
@@ -41,11 +43,15 @@ export const prepareChannels = async (guild: Guild): Promise<void> => {
     }
 };
 
-
 export const imageExists = async (url: string): Promise<boolean> => {
     try {
-        const response = await fetch(url);
-        return response.status === 200;
+        const response = await axios.head(url, { maxRedirects: 5 }); // Limit the number of redirects to avoid infinite loops
+        const contentType = response.headers['content-type'];
+        if (!contentType) {
+            return false;
+        }
+        const mimeType = mime.getExtension(contentType);
+        return ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'].includes(mimeType);
     } catch (error) {
         return false;
     }

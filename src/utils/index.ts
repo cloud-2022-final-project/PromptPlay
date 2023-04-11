@@ -43,6 +43,8 @@ export const prepareChannels = async (guild: Guild): Promise<void> => {
     }
 };
 
+export const allowedImageTypes = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
+
 export const imageExists = async (url: string): Promise<boolean> => {
     try {
         const response = await axios.head(url, { maxRedirects: 5 }); // Limit the number of redirects to avoid infinite loops
@@ -51,7 +53,7 @@ export const imageExists = async (url: string): Promise<boolean> => {
             return false;
         }
         const mimeType = mime.getExtension(contentType);
-        return ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'].includes(mimeType);
+        return allowedImageTypes.includes(mimeType);
     } catch (error) {
         return false;
     }

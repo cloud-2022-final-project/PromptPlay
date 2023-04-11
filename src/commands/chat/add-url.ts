@@ -26,7 +26,7 @@ export class AddUrl implements Command {
                 embed
                     .setTitle('Invalid Arguments')
                     .setColor('Red')
-                    .setDescription('Image at the given `url` is not found')
+                    .setDescription('Please provide a valid `url` and `prompt`')
             );
             return;
         }
@@ -37,7 +37,7 @@ export class AddUrl implements Command {
                 embed
                     .setTitle('Invalid URL')
                     .setColor('Red')
-                    .setDescription('Please provide a valid `url`')
+                    .setDescription('Image at the given URL does not exist')
             );
             return;
         }

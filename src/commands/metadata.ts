@@ -11,6 +11,7 @@ import { Args } from './index.js';
 import { Language } from '../models/enum-helpers/index.js';
 import { Lang } from '../services/index.js';
 import { genPromptCommandName } from './chat/gen-prompt.js';
+import { addUrlCommandName } from './chat/add-url.js';
 
 export const ChatCommandMetadata: {
     [command: string]: RESTPostAPIChatInputApplicationCommandsJSONBody;
@@ -57,6 +58,28 @@ export const ChatCommandMetadata: {
                 name: 'image',
                 description: 'The image to submit',
                 type: ApplicationCommandOptionType.Attachment,
+                required: true,
+            },
+        ],
+    },
+    ADD_URL: {
+        type: ApplicationCommandType.ChatInput,
+        name: addUrlCommandName,
+        description: 'Manually submit a daily image url',
+        dm_permission: false,
+        default_member_permissions: PermissionFlagsBits.Administrator.toString(),
+        options: [
+            {
+                name: 'prompt',
+                description: 'Prompt for the image',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+            },
+            {
+                name: 'url',
+                description:
+                    'The url of an image to submit. ❗❗❗ This url must be permanent and not expire. ❗❗❗',
+                type: ApplicationCommandOptionType.String,
                 required: true,
             },
         ],

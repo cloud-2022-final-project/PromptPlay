@@ -1,5 +1,6 @@
 export { SubmitImage } from './prompt.create.js';
 export { AddImage } from './add-image.js';
+export { AddUrl } from './add-url.js';
 export { HelpCommand } from './help-command.js';
 export { InfoCommand } from './info-command.js';
 export { TestCommand } from './test-command.js';

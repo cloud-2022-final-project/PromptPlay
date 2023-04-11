@@ -15,6 +15,7 @@ import {
     TestCommand,
     AddImage,
     GenPrompt,
+    AddUrl,
 } from './commands/chat/index.js';
 import {
     ChatCommandMetadata,
@@ -80,6 +81,7 @@ async function start(): Promise<void> {
         // dev commands for us to use
         new ForceSendDaily(client),
         new AddImage(),
+        new AddUrl(),
         new GenPrompt(),
 
         // Message Context Commands

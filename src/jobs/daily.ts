@@ -7,6 +7,8 @@ import { ClientUtils } from '../utils/client-utils.js';
 import { MessageUtils } from '../utils/message-utils.js';
 import { DailyImage } from '@prisma/client';
 import { ChatGPT } from '../services/chatpgt.js';
+import fetch from 'node-fetch';
+import { imageExists } from '../utils/index.js';
 
 export const targetChannel = 'daily';
 
@@ -166,7 +168,16 @@ const getNewImage = async (): Promise<{
     url: string;
     prompt: string;
 } | null> => {
-    const newImage = await prisma.imageStore.findFirst();
+    let newImage = await prisma.imageStore.findFirst();
+
+    while (newImage && !(await imageExists(newImage.url))) {
+        await prisma.imageStore.delete({
+            where: {
+                url: newImage.url,
+            },
+        });
+        newImage = await prisma.imageStore.findFirst();
+    }
 
     if (newImage) {
         await prisma.imageStore.delete({

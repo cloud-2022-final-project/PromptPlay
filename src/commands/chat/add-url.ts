@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, EmbedBuilder, PermissionsString } from 'discord.js';
 import { Command, CommandDeferType } from '../command.js';
 import { EventData } from '../../models/internal-models.js';
-import { InteractionUtils } from '../../utils/index.js';
+import { InteractionUtils, imageExists } from '../../utils/index.js';
 import { prisma } from '../../prisma.js';
 
 export const addUrlCommandName = 'add-url';
@@ -27,6 +27,17 @@ export class AddUrl implements Command {
                     .setTitle('Invalid Arguments')
                     .setColor('Red')
                     .setDescription('Please provide a valid `url` and `prompt`')
+            );
+            return;
+        }
+
+        if (!(await imageExists(url))) {
+            await InteractionUtils.send(
+                intr,
+                embed
+                    .setTitle('Invalid URL')
+                    .setColor('Red')
+                    .setDescription('Please provide a valid `url`')
             );
             return;
         }

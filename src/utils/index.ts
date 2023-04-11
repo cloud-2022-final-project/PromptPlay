@@ -40,3 +40,13 @@ export const prepareChannels = async (guild: Guild): Promise<void> => {
         }
     }
 };
+
+
+export const imageExists = async (url: string): Promise<boolean> => {
+    try {
+        const response = await fetch(url);
+        return response.status === 200;
+    } catch (error) {
+        return false;
+    }
+};

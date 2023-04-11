@@ -13,7 +13,7 @@ import {
     SubmitImage,
     Start,
     TestCommand,
-    ManualAddDailyImage,
+    AddImage,
     GenPrompt,
 } from './commands/chat/index.js';
 import {
@@ -79,7 +79,7 @@ async function start(): Promise<void> {
 
         // dev commands for us to use
         new ForceSendDaily(client),
-        new ManualAddDailyImage(),
+        new AddImage(),
         new GenPrompt(),
 
         // Message Context Commands

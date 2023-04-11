@@ -4,13 +4,13 @@ import { EventData } from '../../models/internal-models.js';
 import { InteractionUtils } from '../../utils/index.js';
 import { prisma } from '../../prisma.js';
 
-export const manualDailyImageCommandName = 'add-daily-image';
+export const addImageCommandName = 'add-image';
 
 /**
  * Command to manually submit a daily image with a prompt.
  */
-export class ManualAddDailyImage implements Command {
-    public names = [manualDailyImageCommandName];
+export class AddImage implements Command {
+    public names = [addImageCommandName];
     public deferType = CommandDeferType.HIDDEN;
     public requireClientPerms: PermissionsString[] = [];
 

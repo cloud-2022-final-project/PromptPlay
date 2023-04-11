@@ -1,4 +1,4 @@
-import { manualDailyImageCommandName } from './chat/manual-daily-image.js';
+import { addImageCommandName } from './chat/add-image.js';
 import {
     ApplicationCommandOptionType,
     ApplicationCommandType,
@@ -40,9 +40,9 @@ export const ChatCommandMetadata: {
         dm_permission: false,
         default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     },
-    DEV_SUBMIT_DAILY_IMAGE: {
+    ADD_IMAGE: {
         type: ApplicationCommandType.ChatInput,
-        name: manualDailyImageCommandName,
+        name: addImageCommandName,
         description: 'Manually submit a daily image',
         dm_permission: false,
         default_member_permissions: PermissionFlagsBits.Administrator.toString(),

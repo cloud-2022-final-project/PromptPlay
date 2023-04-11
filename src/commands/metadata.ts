@@ -15,42 +15,95 @@ import { genPromptCommandName } from './chat/gen-prompt.js';
 export const ChatCommandMetadata: {
     [command: string]: RESTPostAPIChatInputApplicationCommandsJSONBody;
 } = {
-    HELP: {
+    GUESS: {
         type: ApplicationCommandType.ChatInput,
-        name: Lang.getRef('chatCommands.help', Language.Default),
-        name_localizations: Lang.getRefLocalizationMap('chatCommands.help'),
-        description: Lang.getRef('commandDescs.help', Language.Default),
-        description_localizations: Lang.getRefLocalizationMap('commandDescs.help'),
-        dm_permission: true,
+        name: Lang.getRef('chatCommands.guess', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('chatCommands.guess'),
+        description: Lang.getRef('commandDescs.guess', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('commandDescs.guess'),
+        dm_permission: false,
         options: [
             {
-                ...Args.HELP_OPTION,
+                name: 'prompt',
+                description: 'Prompt for the image',
+                type: ApplicationCommandOptionType.String,
                 required: true,
             },
         ],
     },
-    INFO: {
+    DAILY: {
         type: ApplicationCommandType.ChatInput,
-        name: Lang.getRef('chatCommands.info', Language.Default),
-        name_localizations: Lang.getRefLocalizationMap('chatCommands.info'),
-        description: Lang.getRef('commandDescs.info', Language.Default),
-        description_localizations: Lang.getRefLocalizationMap('commandDescs.info'),
-        dm_permission: true,
+        name: Lang.getRef('chatCommands.forceSendDaily', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('chatCommands.forceSendDaily'),
+        description: Lang.getRef('commandDescs.forceSendDaily', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('commandDescs.forceSendDaily'),
+        dm_permission: false,
+        default_member_permissions: PermissionFlagsBits.Administrator.toString(),
+    },
+    DEV_SUBMIT_DAILY_IMAGE: {
+        type: ApplicationCommandType.ChatInput,
+        name: manualDailyImageCommandName,
+        description: 'Manually submit a daily image',
+        dm_permission: false,
+        default_member_permissions: PermissionFlagsBits.Administrator.toString(),
         options: [
             {
-                ...Args.INFO_OPTION,
+                name: 'prompt',
+                description: 'Prompt for the image',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+            },
+            {
+                name: 'image',
+                description: 'The image to submit',
+                type: ApplicationCommandOptionType.Attachment,
                 required: true,
             },
         ],
     },
-    TEST: {
+    GEN_PROMPT: {
         type: ApplicationCommandType.ChatInput,
-        name: Lang.getRef('chatCommands.test', Language.Default),
-        name_localizations: Lang.getRefLocalizationMap('chatCommands.test'),
-        description: Lang.getRef('commandDescs.test', Language.Default),
-        description_localizations: Lang.getRefLocalizationMap('commandDescs.test'),
-        dm_permission: true,
+        name: genPromptCommandName,
+        description: 'Get a random prompt',
+        dm_permission: false,
+        default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     },
+    // HELP: {
+    //     type: ApplicationCommandType.ChatInput,
+    //     name: Lang.getRef('chatCommands.help', Language.Default),
+    //     name_localizations: Lang.getRefLocalizationMap('chatCommands.help'),
+    //     description: Lang.getRef('commandDescs.help', Language.Default),
+    //     description_localizations: Lang.getRefLocalizationMap('commandDescs.help'),
+    //     dm_permission: true,
+    //     options: [
+    //         {
+    //             ...Args.HELP_OPTION,
+    //             required: true,
+    //         },
+    //     ],
+    // },
+    // INFO: {
+    //     type: ApplicationCommandType.ChatInput,
+    //     name: Lang.getRef('chatCommands.info', Language.Default),
+    //     name_localizations: Lang.getRefLocalizationMap('chatCommands.info'),
+    //     description: Lang.getRef('commandDescs.info', Language.Default),
+    //     description_localizations: Lang.getRefLocalizationMap('commandDescs.info'),
+    //     dm_permission: true,
+    //     options: [
+    //         {
+    //             ...Args.INFO_OPTION,
+    //             required: true,
+    //         },
+    //     ],
+    // },
+    // TEST: {
+    //     type: ApplicationCommandType.ChatInput,
+    //     name: Lang.getRef('chatCommands.test', Language.Default),
+    //     name_localizations: Lang.getRefLocalizationMap('chatCommands.test'),
+    //     description: Lang.getRef('commandDescs.test', Language.Default),
+    //     description_localizations: Lang.getRefLocalizationMap('commandDescs.test'),
+    //     dm_permission: true,
+    // },
     // NEW_ROOM: {
     //     type: ApplicationCommandType.ChatInput,
     //     name: Lang.getRef('chatCommands.newRoom', Language.Default),
@@ -78,31 +131,6 @@ export const ChatCommandMetadata: {
     //     dm_permission: false,
     //     default_member_permissions: undefined,
     // },
-    GUESS: {
-        type: ApplicationCommandType.ChatInput,
-        name: Lang.getRef('chatCommands.guess', Language.Default),
-        name_localizations: Lang.getRefLocalizationMap('chatCommands.guess'),
-        description: Lang.getRef('commandDescs.guess', Language.Default),
-        description_localizations: Lang.getRefLocalizationMap('commandDescs.guess'),
-        dm_permission: false,
-        options: [
-            {
-                name: 'prompt',
-                description: 'Prompt for the image',
-                type: ApplicationCommandOptionType.String,
-                required: true,
-            },
-        ],
-    },
-    DAILY: {
-        type: ApplicationCommandType.ChatInput,
-        name: Lang.getRef('chatCommands.forceSendDaily', Language.Default),
-        name_localizations: Lang.getRefLocalizationMap('chatCommands.forceSendDaily'),
-        description: Lang.getRef('commandDescs.forceSendDaily', Language.Default),
-        description_localizations: Lang.getRefLocalizationMap('commandDescs.forceSendDaily'),
-        dm_permission: false,
-        default_member_permissions: PermissionFlagsBits.Administrator.toString(),
-    },
     // SUBMIT_IMAGE: {
     //     type: ApplicationCommandType.ChatInput,
     //     name: Lang.getRef('chatCommands.submitImage', Language.Default),
@@ -118,33 +146,6 @@ export const ChatCommandMetadata: {
     //         },
     //     ],
     // },
-    DEV_SUBMIT_DAILY_IMAGE: {
-        type: ApplicationCommandType.ChatInput,
-        name: manualDailyImageCommandName,
-        description: 'Manually submit a daily image',
-        dm_permission: false,
-        options: [
-            {
-                name: 'prompt',
-                description: 'Prompt for the image',
-                type: ApplicationCommandOptionType.String,
-                required: true,
-            },
-            {
-                name: 'image',
-                description: 'The image to submit',
-                type: ApplicationCommandOptionType.Attachment,
-                required: true,
-            },
-        ],
-    },
-    GEN_PROMPT: {
-        type: ApplicationCommandType.ChatInput,
-        name: genPromptCommandName,
-        description: 'Get a random prompt',
-        dm_permission: false,
-        default_member_permissions: PermissionFlagsBits.Administrator.toString(),
-    },
 };
 
 export const MessageCommandMetadata: {

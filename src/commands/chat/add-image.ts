@@ -19,6 +19,8 @@ export class AddImage implements Command {
         const url = attachment?.url;
         const prompt = intr.options.get('prompt')?.value as string;
 
+        // TODO: verify image type
+
         const embed = new EmbedBuilder();
 
         if (!url || !prompt) {

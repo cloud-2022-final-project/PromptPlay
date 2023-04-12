@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, EmbedBuilder, PermissionsString } from 'discord.js';
 import { Command, CommandDeferType } from '../command.js';
 import { EventData } from '../../models/internal-models.js';
-import { InteractionUtils, imageExists } from '../../utils/index.js';
+import { InteractionUtils, allowedImageTypes, imageExists } from '../../utils/index.js';
 import { prisma } from '../../prisma.js';
 
 export const addUrlCommandName = 'add-url';
@@ -37,7 +37,11 @@ export class AddUrl implements Command {
                 embed
                     .setTitle('Invalid URL')
                     .setColor('Red')
-                    .setDescription('Image at the given URL does not exist')
+                    .setDescription(
+                        `Image at the given URL does not exist or the image type is not supported. Supported image types: ${allowedImageTypes
+                            .map(t => `\`${t}\``)
+                            .join(', ')}`
+                    )
             );
             return;
         }

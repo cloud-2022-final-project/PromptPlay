@@ -43,7 +43,10 @@ export const prepareChannels = async (guild: Guild): Promise<void> => {
     }
 };
 
-export const allowedImageTypes = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
+/**
+ * @see https://discord.com/developers/docs/reference#editing-message-attachments-using-attachments-within-embeds
+ */
+export const allowedImageTypes = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
 
 export const imageExists = async (url: string): Promise<boolean> => {
     try {

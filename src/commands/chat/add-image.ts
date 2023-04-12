@@ -21,9 +21,20 @@ export class AddImage implements Command {
 
         const embed = new EmbedBuilder();
 
-        // verify image type
+        // verify image
+        if (!contentType) {
+            await InteractionUtils.send(
+                intr,
+                embed
+                    .setTitle('Invalid Image Type')
+                    .setColor('Red')
+                    .setDescription('Please provide a valid `image`')
+            );
+            return;
+        }
+        // check if image is supported
         const mimeType = mime.getExtension(contentType);
-        if (!allowedImageTypes.includes(mime.getExtension(contentType))) {
+        if (!allowedImageTypes.includes(mimeType)) {
             await InteractionUtils.send(
                 intr,
                 embed
@@ -38,9 +49,9 @@ export class AddImage implements Command {
             return;
         }
 
+        // extract url and prompt
         const url = attachment?.url;
         const prompt = intr.options.get('prompt')?.value as string;
-
         if (!url || !prompt) {
             await InteractionUtils.send(
                 intr,

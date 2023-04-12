@@ -1,7 +1,7 @@
 import { ChannelType, EmbedBuilder, TextChannel } from 'discord.js';
 import { Job } from './index.js';
 import { CustomClient } from '../extensions/index.js';
-import { Logger } from '../services/index.js';
+import { Lang, Logger } from '../services/index.js';
 import { prisma } from '../prisma.js';
 import { ClientUtils } from '../utils/client-utils.js';
 import { MessageUtils } from '../utils/message-utils.js';
@@ -9,6 +9,7 @@ import { DailyImage } from '@prisma/client';
 import { ChatGPT } from '../services/chatpgt.js';
 import fetch from 'node-fetch';
 import { imageExists } from '../utils/index.js';
+import { Language } from '../models/enum-helpers/index.js';
 
 export const targetChannel = 'daily';
 
@@ -261,7 +262,12 @@ const sendNewDailyImage = async (channel: TextChannel, dailyImage: DailyImage) =
     const embed = new EmbedBuilder()
         .setColor('Green')
         .setTitle(`Round ${dailyImage.round} starts now!`)
-        .setDescription(hint)
+        .setDescription(
+            `Use \`/${Lang.getRef(
+                'chatCommands.guess',
+                Language.Default
+            )}\` to participate.\n${hint}`
+        )
         .setImage(dailyImage.url);
     MessageUtils.send(channel, embed);
 };

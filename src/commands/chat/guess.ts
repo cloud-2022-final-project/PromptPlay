@@ -63,16 +63,16 @@ export class Guess implements Command {
         // get the score of the guess
         const newScore = await getSimilarityScore(prompt, currentImg.prompt);
 
-        // create a user if they don't exist
-        await prisma.user.upsert({
-            where: {
-                discordId: intr.user.id,
-            },
-            create: {
-                discordId: intr.user.id,
-            },
-            update: {},
-        });
+        // // create a user if they don't exist
+        // await prisma.user.upsert({
+        //     where: {
+        //         discordId: intr.user.id,
+        //     },
+        //     create: {
+        //         discordId: intr.user.id,
+        //     },
+        //     update: {},
+        // });
 
         // create a daily player if they don't exist or update their guess info
         const existingPlayer = await prisma.dailyPlayer.findFirst({
@@ -97,16 +97,16 @@ export class Guess implements Command {
                         dailyImageUrl: currentImg.url,
                     },
                 }),
-                prisma.user.update({
-                    where: {
-                        discordId: intr.user.id,
-                    },
-                    data: {
-                        totalScore: {
-                            increment: newScore - existingPlayer.score, // increment by the difference because the score is being updated
-                        },
-                    },
-                }),
+                // prisma.user.update({
+                //     where: {
+                //         discordId: intr.user.id,
+                //     },
+                //     data: {
+                //         totalScore: {
+                //             increment: newScore - existingPlayer.score, // increment by the difference because the score is being updated
+                //         },
+                //     },
+                // }),
             ]);
         } else {
             await Promise.all([
@@ -118,16 +118,16 @@ export class Guess implements Command {
                         dailyImageUrl: currentImg.url,
                     },
                 }),
-                prisma.user.update({
-                    where: {
-                        discordId: intr.user.id,
-                    },
-                    data: {
-                        totalScore: {
-                            increment: newScore, // increment by the new score
-                        },
-                    },
-                }),
+                // prisma.user.update({
+                //     where: {
+                //         discordId: intr.user.id,
+                //     },
+                //     data: {
+                //         totalScore: {
+                //             increment: newScore, // increment by the new score
+                //         },
+                //     },
+                // }),
             ]);
         }
 

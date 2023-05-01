@@ -213,7 +213,22 @@ async function reportDailyResults(
     const discordUsers = await Promise.all(
         dailyPlayers.map(async p => await ClientUtils.getUser(client, p.discordId))
     );
-
+    dailyPlayers.map(async p => {
+        await prisma.user.upsert({
+            where: {
+                discordId: p.discordId,
+            },
+            update: {
+                totalScore: {
+                    increment: p.score,
+                },
+            },
+            create: {
+                discordId: p.discordId,
+                totalScore: p.score,
+            },
+        });
+    });
     // get the usernames of top players
     const top10 = discordUsers.slice(0, 10);
 

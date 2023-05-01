@@ -196,7 +196,8 @@
             "start": "start",
             "guess": "guess",
             "forceSendDaily": "daily",
-            "submitImage": "submit-image"
+            "submitImage": "submit-image",
+            "forceSendWeekly": "weekly"
         },
         "userCommands": {
             "viewDateJoined": "View Date Joined"
@@ -217,7 +218,8 @@
             "start": "Start the game room.",
             "guess": "Make a guess.",
             "forceSendDaily": "Force execute the Daily job.",
-            "submitImage": "Create an image from a prompt."
+            "submitImage": "Create an image from a prompt.",
+            "forceSendWeekly": "Force execute the Weekly job."
         },
         "argDescs": {
             "helpOption": "Option.",

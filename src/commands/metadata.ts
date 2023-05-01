@@ -91,6 +91,15 @@ export const ChatCommandMetadata: {
         dm_permission: false,
         default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     },
+    WEEKLY: {
+        type: ApplicationCommandType.ChatInput,
+        name: Lang.getRef('chatCommands.forceSendWeekly', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('chatCommands.forceSendWeekly'),
+        description: Lang.getRef('commandDescs.forceSendWeekly', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('commandDescs.forceSendWeekly'),
+        dm_permission: false,
+        default_member_permissions: PermissionFlagsBits.Administrator.toString(),
+    },
     // HELP: {
     //     type: ApplicationCommandType.ChatInput,
     //     name: Lang.getRef('chatCommands.help', Language.Default),

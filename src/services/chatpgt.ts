@@ -1,10 +1,21 @@
+import { Configuration, OpenAIApi } from 'openai';
+
+const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
 /**
  * Sends a prompt to ChatGPT and returns the generated response.
  * @param prompt The prompt to send to ChatGPT.
  */
-const send = async (prompt: string) => {
-    // TODO: Implement this function.
-    return 'This is a mock generated prompt.';
+const send = async (prompt: string): Promise<string> => {
+    const completion = await openai.createCompletion({
+        model: 'text-davinci-003',
+        prompt: prompt,
+    });
+
+    return completion.data.choices[0].text;
 };
 
 export const ChatGPT = {

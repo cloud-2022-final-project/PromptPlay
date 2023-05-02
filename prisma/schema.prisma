@@ -9,6 +9,8 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  //output
+  output   = "../node_modules/.prisma/client"
 }
 
 // This model represents a user for the app across all seasons.

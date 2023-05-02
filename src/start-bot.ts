@@ -36,7 +36,7 @@ import {
     TriggerHandler,
 } from './events/index.js';
 import { CustomClient } from './extensions/index.js';
-import { Daily, Job, Weekly } from './jobs/index.js';
+import { Daily, Job } from './jobs/index.js';
 import { Bot } from './models/bot.js';
 import { Reaction } from './reactions/index.js';
 import {
@@ -120,7 +120,7 @@ async function start(): Promise<void> {
     let reactionHandler = new ReactionHandler(reactions, eventDataService);
 
     // Jobs
-    let jobs: Job[] = [new Daily(client), new Weekly(client)];
+    let jobs: Job[] = [new Daily(client)];
 
     // Bot
     let bot = new Bot(

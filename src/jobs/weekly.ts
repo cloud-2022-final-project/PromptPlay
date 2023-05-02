@@ -119,7 +119,4 @@ async function reportWeeklyResults(
             MessageUtils.send(discordUser, embed);
         })
     );
-
-    //delete all user
-    await prisma.user.deleteMany();
 }

@@ -38,6 +38,7 @@ export const processDaily = async (
  * @returns `true` if there is a new image to play with, `false` otherwise.
  */
 const _process = async (client: CustomClient, targetChannel: string): Promise<boolean> => {
+    const seasonalDuration = 3;
     // Find the channel by name
     const channel = client.channels.cache.find(
         c => c.type === ChannelType.GuildText && c.name === targetChannel
@@ -84,13 +85,18 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
                 url: newImage.url,
             },
         });
-
+        let seasonTemp = dailyImage.round / seasonalDuration;
         // send the new image to the channel
-        await sendNewDailyImage(channel, dailyImage);
+        await sendNewDailyImage(
+            channel,
+            dailyImage,
+            Math.ceil(dailyImage.round / seasonalDuration)
+        );
 
         return true;
     }
 
+    const seasonRound = Math.ceil(dailyImage.round / seasonalDuration);
     // if the current image is active (in play)
     if (dailyImage.active) {
         // if there are no players,
@@ -103,8 +109,20 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
             // remove all players so that the next round can start with no players
             prisma.dailyPlayer.deleteMany(),
             // report the results of the current round's voting
-            reportDailyResults(dailyImage, dailyImage.players, client, channel),
+            reportDailyResults(dailyImage, dailyImage.players, client, channel, seasonRound),
         ]);
+    }
+    // check round of image, if % 3 == 0 seasonal trigger
+    if (dailyImage.round % seasonalDuration == 0) {
+        // Process the job
+        const users = await prisma.user.findMany({
+            orderBy: {
+                totalScore: 'desc',
+            },
+        });
+        reportWeeklyResults(users, client, channel, seasonRound);
+        //delete all user
+        await prisma.user.deleteMany();
     }
 
     // get a new image and prompt for the next round
@@ -140,7 +158,7 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
     });
 
     // send the new image
-    await sendNewDailyImage(channel, newDailyImage);
+    await sendNewDailyImage(channel, newDailyImage, seasonRound);
     return true;
 };
 
@@ -207,7 +225,8 @@ async function reportDailyResults(
         prompt: string;
     }[],
     client: CustomClient,
-    channel: TextChannel
+    channel: TextChannel,
+    seasonRound: number
 ) {
     // get all discord users who play this round for their usernames
     const discordUsers = await Promise.all(
@@ -231,11 +250,10 @@ async function reportDailyResults(
     });
     // get the usernames of top players
     const top10 = discordUsers.slice(0, 10);
-
     // send current image, prompt, and top 10 players publicly to the channel
     const embed = new EmbedBuilder()
         .setColor('Yellow')
-        .setTitle(`Round ${dailyImage.round} Results`)
+        .setTitle(`Season #${seasonRound}\nRound ${dailyImage.round} Results`)
         .setImage(dailyImage.url).setDescription(`
             **Answer:** \`${dailyImage.prompt}\`\n
             **Top 10 Players:**\n
@@ -255,7 +273,8 @@ async function reportDailyResults(
             const embed = new EmbedBuilder()
                 .setColor('Yellow')
                 .setImage(dailyImage.url)
-                .setTitle(`Round ${dailyImage.round} Results`).setDescription(`
+                .setTitle(`Season #${seasonRound}\nRound ${dailyImage.round} Results`)
+                .setDescription(`
                     **Answer:** \`${dailyImage.prompt}\`
                     **Your Prompt:** \`${dailyPlayers[i].prompt}\`
                     **Your Score:** ${dailyPlayers[i].score.toFixed(
@@ -271,12 +290,17 @@ async function reportDailyResults(
  * This function sends a new daily image to the channel.
  * @param channel The channel to send the image to
  * @param dailyImage The daily image to send
+ * @param seasonRound The daily image to send
  */
-const sendNewDailyImage = async (channel: TextChannel, dailyImage: DailyImage) => {
+const sendNewDailyImage = async (
+    channel: TextChannel,
+    dailyImage: DailyImage,
+    seasonRound: number
+) => {
     const hint = await ChatGPT.hint(dailyImage.prompt);
     const embed = new EmbedBuilder()
         .setColor('Green')
-        .setTitle(`Round ${dailyImage.round} starts now!`)
+        .setTitle(`Season #${seasonRound} Results\nRound ${dailyImage.round} starts now!`)
         .setDescription(
             `Use \`/${Lang.getRef(
                 'chatCommands.guess',
@@ -286,3 +310,53 @@ const sendNewDailyImage = async (channel: TextChannel, dailyImage: DailyImage) =
         .setImage(dailyImage.url);
     MessageUtils.send(channel, embed);
 };
+
+/**
+ * This function reports the results of the voting to the channel and to each player.
+ * @param User Players who have voted on the image
+ * @param client The discord bot client to send the image with
+ * @param channel The channel to send the report to
+ */
+async function reportWeeklyResults(
+    Users: {
+        discordId: string;
+        totalScore: number;
+    }[],
+    client: CustomClient,
+    channel: TextChannel,
+    seasonRound: number
+) {
+    // get all discord users who play this round for their usernames
+    const discordUsers = await Promise.all(
+        Users.map(async p => await ClientUtils.getUser(client, p.discordId))
+    );
+
+    // get the usernames of top players
+    const top10 = discordUsers.slice(0, 10);
+
+    // send current image, prompt, and top 10 players publicly to the channel
+    const embed = new EmbedBuilder().setColor('Yellow').setTitle(`Season #${seasonRound} Results`)
+        .setDescription(`
+            **Top 10 Players:**\n
+            ${top10
+                .map(
+                    (discordUser, i) =>
+                        `${i + 1}. ${discordUser.tag} 👉
+                         ${Users[i].totalScore.toFixed(2)}`
+                )
+                .join('\n')}`);
+    MessageUtils.send(channel, embed);
+
+    // privately report each player's score to them
+    await Promise.all(
+        discordUsers.map(async (discordUser, i) => {
+            const embed = new EmbedBuilder().setColor('Yellow').setTitle(`Your Season Results`)
+                .setDescription(`
+                    **Your Score:** ${Users[i].totalScore.toFixed(
+                        2
+                    )} (highest score: ${Users[0].totalScore.toFixed(2)})
+                    **Rank:** ${i + 1}/${Users.length}`);
+            MessageUtils.send(discordUser, embed);
+        })
+    );
+}

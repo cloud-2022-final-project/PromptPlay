@@ -13,6 +13,7 @@ const send = async (prompt: string): Promise<string> => {
     const completion = await openai.createCompletion({
         model: 'text-davinci-003',
         prompt: prompt,
+        max_tokens: 1000,
     });
 
     return completion.data.choices[0].text;
@@ -31,6 +32,6 @@ export const ChatGPT = {
     },
     hint: (truePrompt: string) =>
         send(
-            `"${truePrompt}" This sentence is meant for other people to guess. Give a long difficult hint. Don't directly mention the nouns in the sentence and use other alternatives of verbs. Emojis as the entire hint at the end.`
+            `"${truePrompt}" This sentence is meant for other people to guess. Give a difficult hint with at least 30 words. Don't directly mention the nouns in the sentence and use other alternatives of verbs. Emojis as the entire hint at the end.`
         ),
 };

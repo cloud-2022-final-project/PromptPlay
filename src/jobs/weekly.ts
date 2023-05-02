@@ -54,8 +54,23 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
             totalScore: 'desc',
         },
     });
-
-    reportWeeklyResults(users, client, channel);
+    const dailyImage = await prisma.dailyImage.findFirst({
+        include: {
+            players: {
+                orderBy: {
+                    score: 'desc',
+                },
+                select: {
+                    score: true,
+                    discordId: true,
+                    prompt: true,
+                },
+            },
+        },
+    });
+    const seasonalDuration = 3;
+    const seasonRound = dailyImage ? Math.ceil(dailyImage.round / seasonalDuration) : 0;
+    reportWeeklyResults(users, client, channel, seasonRound);
     return true;
 };
 /**
@@ -79,6 +94,7 @@ export class Weekly implements Job {
  * @param User Players who have voted on the image
  * @param client The discord bot client to send the image with
  * @param channel The channel to send the report to
+ * @param seasonRound The channel to send the report to
  */
 async function reportWeeklyResults(
     Users: {
@@ -86,7 +102,8 @@ async function reportWeeklyResults(
         totalScore: number;
     }[],
     client: CustomClient,
-    channel: TextChannel
+    channel: TextChannel,
+    seasonRound: number
 ) {
     // get all discord users who play this round for their usernames
     const discordUsers = await Promise.all(
@@ -97,7 +114,8 @@ async function reportWeeklyResults(
     const top10 = discordUsers.slice(0, 10);
 
     // send current image, prompt, and top 10 players publicly to the channel
-    const embed = new EmbedBuilder().setColor('Yellow').setTitle(`Weekly Results`).setDescription(`
+    const embed = new EmbedBuilder().setColor('Yellow').setTitle(`Season #${seasonRound} Results`)
+        .setDescription(`
             **Top 10 Players:**\n
             ${top10
                 .map(
@@ -111,7 +129,8 @@ async function reportWeeklyResults(
     // privately report each player's score to them
     await Promise.all(
         discordUsers.map(async (discordUser, i) => {
-            const embed = new EmbedBuilder().setColor('Yellow').setTitle(`Results`).setDescription(`
+            const embed = new EmbedBuilder().setColor('Yellow').setTitle(`Your Season Results`)
+                .setDescription(`
                     **Your Score:** ${Users[i].totalScore.toFixed(
                         2
                     )} (highest score: ${Users[0].totalScore.toFixed(2)})

@@ -6,7 +6,6 @@ import { EventData } from '../../models/internal-models.js';
 import { CustomClient } from '../../extensions/custom-client.js';
 import { InteractionUtils } from '../../utils/interaction-utils.js';
 import { processWeekly, targetChannel } from '../../jobs/weekly.js';
-
 /**
  * This command is used to execute the `Daily` job without having to
  * wait for the scheduled time.

@@ -85,13 +85,8 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
                 url: newImage.url,
             },
         });
-        let seasonTemp = dailyImage.round / seasonalDuration;
         // send the new image to the channel
-        await sendNewDailyImage(
-            channel,
-            dailyImage,
-            Math.ceil(dailyImage.round / seasonalDuration)
-        );
+        await sendNewDailyImage(channel, dailyImage);
 
         return true;
     }
@@ -109,20 +104,20 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
             // remove all players so that the next round can start with no players
             prisma.dailyPlayer.deleteMany(),
             // report the results of the current round's voting
-            reportDailyResults(dailyImage, dailyImage.players, client, channel, seasonRound),
+            reportDailyResults(dailyImage, dailyImage.players, client, channel),
         ]);
-    }
-    // check round of image, if % 3 == 0 seasonal trigger
-    if (dailyImage.round % seasonalDuration == 0) {
-        // Process the job
-        const users = await prisma.user.findMany({
-            orderBy: {
-                totalScore: 'desc',
-            },
-        });
-        reportWeeklyResults(users, client, channel, seasonRound);
-        //delete all user
-        await prisma.user.deleteMany();
+        // check round of image, if % 3 == 0 seasonal trigger
+        if (dailyImage.round % seasonalDuration == 0) {
+            // Process the job
+            const users = await prisma.user.findMany({
+                orderBy: {
+                    totalScore: 'desc',
+                },
+            });
+            reportWeeklyResults(users, client, channel, seasonRound);
+            //delete all user
+            await prisma.user.deleteMany();
+        }
     }
 
     // get a new image and prompt for the next round
@@ -158,7 +153,7 @@ const _process = async (client: CustomClient, targetChannel: string): Promise<bo
     });
 
     // send the new image
-    await sendNewDailyImage(channel, newDailyImage, seasonRound);
+    await sendNewDailyImage(channel, newDailyImage);
     return true;
 };
 
@@ -225,8 +220,7 @@ async function reportDailyResults(
         prompt: string;
     }[],
     client: CustomClient,
-    channel: TextChannel,
-    seasonRound: number
+    channel: TextChannel
 ) {
     // get all discord users who play this round for their usernames
     const discordUsers = await Promise.all(
@@ -253,7 +247,7 @@ async function reportDailyResults(
     // send current image, prompt, and top 10 players publicly to the channel
     const embed = new EmbedBuilder()
         .setColor('Yellow')
-        .setTitle(`Season #${seasonRound}\nRound ${dailyImage.round} Results`)
+        .setTitle(`Round ${dailyImage.round} Results`)
         .setImage(dailyImage.url).setDescription(`
             **Answer:** \`${dailyImage.prompt}\`\n
             **Top 10 Players:**\n
@@ -273,8 +267,7 @@ async function reportDailyResults(
             const embed = new EmbedBuilder()
                 .setColor('Yellow')
                 .setImage(dailyImage.url)
-                .setTitle(`Season #${seasonRound}\nRound ${dailyImage.round} Results`)
-                .setDescription(`
+                .setTitle(`Round ${dailyImage.round} Results`).setDescription(`
                     **Answer:** \`${dailyImage.prompt}\`
                     **Your Prompt:** \`${dailyPlayers[i].prompt}\`
                     **Your Score:** ${dailyPlayers[i].score.toFixed(
@@ -292,15 +285,11 @@ async function reportDailyResults(
  * @param dailyImage The daily image to send
  * @param seasonRound The daily image to send
  */
-const sendNewDailyImage = async (
-    channel: TextChannel,
-    dailyImage: DailyImage,
-    seasonRound: number
-) => {
+const sendNewDailyImage = async (channel: TextChannel, dailyImage: DailyImage) => {
     const hint = await ChatGPT.hint(dailyImage.prompt);
     const embed = new EmbedBuilder()
         .setColor('Green')
-        .setTitle(`Season #${seasonRound} Results\nRound ${dailyImage.round} starts now!`)
+        .setTitle(`Round ${dailyImage.round} starts now!`)
         .setDescription(
             `Use \`/${Lang.getRef(
                 'chatCommands.guess',

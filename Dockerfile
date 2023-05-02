@@ -3,6 +3,10 @@ FROM node:16
 # Create app directory
 WORKDIR /app
 
+# Prisma client
+COPY prisma ./prisma
+RUN npx prisma generate
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
 

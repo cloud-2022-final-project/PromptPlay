@@ -32,14 +32,14 @@ model DailyPlayer {
   prompt        String // the prompt that the user guessed for the current round
   score         Float // score for the current prompt
   DailyImage    DailyImage @relation(fields: [dailyImageUrl], references: [url], onDelete: Cascade)
-  dailyImageUrl String
+  dailyImageUrl String @db.VarChar(512)
 
   @@index([dailyImageUrl, score])
 }
 
 // There should be only one instance of this at all times.
 model DailyImage {
-  url     String        @id
+  url     String        @id @db.VarChar(512)
   active  Boolean       @default(true) // whether the current image is in use
   round   Int           @default(1) // count how many rounds have passed
   prompt  String // the true prompt for the current round
@@ -47,7 +47,7 @@ model DailyImage {
 }
 
 model ImageStore {
-  url    String @id
+  url    String @id @db.VarChar(512)
   prompt String // the true prompt for the current round
 }
 

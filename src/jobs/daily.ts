@@ -330,8 +330,7 @@ async function reportWeeklyResults(
             ${top10
                 .map(
                     (discordUser, i) =>
-                        `${i + 1}. ${discordUser.tag} 👉
-                         ${Users[i].totalScore.toFixed(2)}`
+                        `${i + 1}. ${discordUser.tag} 👉 ${Users[i].totalScore.toFixed(2)}`
                 )
                 .join('\n')}`);
     MessageUtils.send(channel, embed);

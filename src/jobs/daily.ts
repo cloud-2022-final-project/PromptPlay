@@ -339,8 +339,9 @@ async function reportWeeklyResults(
     // privately report each player's score to them
     await Promise.all(
         discordUsers.map(async (discordUser, i) => {
-            const embed = new EmbedBuilder().setColor('Yellow').setTitle(`Your Season Results`)
-                .setDescription(`
+            const embed = new EmbedBuilder()
+                .setColor('Yellow')
+                .setTitle(`Your Season #${seasonRound} Result`).setDescription(`
                     **Your Score:** ${Users[i].totalScore.toFixed(
                         2
                     )} (highest score: ${Users[0].totalScore.toFixed(2)})
